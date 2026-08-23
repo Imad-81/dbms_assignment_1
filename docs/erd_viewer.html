@@ -46,12 +46,12 @@
       flex-direction: column;
     }
 
-    /* Top Navigation Header */
+    /* Header */
     header {
-      background: rgba(17, 24, 39, 0.85);
+      background: rgba(17, 24, 39, 0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
-      padding: 1rem 2rem;
+      padding: 0.85rem 2rem;
       position: sticky;
       top: 0;
       z-index: 50;
@@ -127,7 +127,7 @@
     /* Main Container */
     main {
       flex: 1;
-      padding: 2rem;
+      padding: 1.5rem 2rem;
       max-width: 1600px;
       margin: 0 auto;
       width: 100%;
@@ -152,8 +152,8 @@
       background: linear-gradient(135deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9));
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 1.75rem 2rem;
-      margin-bottom: 2rem;
+      padding: 1.25rem 2rem;
+      margin-bottom: 1.25rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -173,9 +173,9 @@
     }
 
     .hero-text h1 {
-      font-size: 1.75rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.2rem;
       background: linear-gradient(135deg, #ffffff, #93c5fd);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -183,7 +183,7 @@
 
     .hero-text p {
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       max-width: 800px;
     }
 
@@ -195,42 +195,219 @@
     .stat-pill {
       background: rgba(31, 41, 55, 0.8);
       border: 1px solid var(--border-color);
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
       text-align: center;
     }
 
     .stat-number {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--accent-cyan);
       font-family: var(--font-mono);
     }
 
     .stat-label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    /* Diagram Section */
-    .diagram-container {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2rem;
-      overflow-x: auto;
+    /* ERD Module View Switcher Bar */
+    .erd-controls-bar {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      min-height: 600px;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      background: var(--bg-secondary);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
     }
 
-    .diagram-container svg {
-      max-width: 100%;
-      height: auto;
+    .module-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .module-btn {
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 0.825rem;
+      font-weight: 500;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .module-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-blue);
+    }
+
+    .module-btn.active {
+      background: rgba(59, 130, 246, 0.25);
+      border-color: var(--accent-blue);
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    .zoom-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .zoom-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .zoom-btn:hover {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+
+    .zoom-indicator {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      min-width: 55px;
+      text-align: center;
+    }
+
+    /* Diagram Viewport */
+    .diagram-viewport {
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      height: 750px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      box-shadow: inset 0 2px 12px rgba(0,0,0,0.6);
+    }
+
+    .diagram-viewport:active {
+      cursor: grabbing;
+    }
+
+    .diagram-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      padding: 2.5rem;
+      min-width: 1500px;
+      min-height: 900px;
+    }
+
+    /* Mermaid SVG Style Overrides */
+    .diagram-stage svg {
+      height: auto !important;
+      max-width: none !important;
+      font-family: var(--font-sans) !important;
+      display: block;
+    }
+
+    .diagram-stage svg .er.entityBox {
+      fill: #1a2234 !important;
+      stroke: #3b82f6 !important;
+      stroke-width: 2px !important;
+    }
+
+    .diagram-stage svg .er.entityLabel {
+      fill: #f9fafb !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      font-family: var(--font-mono) !important;
+    }
+
+    .diagram-stage svg .er.attributeBoxOdd {
+      fill: #151d2e !important;
+      stroke: #2d3748 !important;
+    }
+
+    .diagram-stage svg .er.attributeBoxEven {
+      fill: #0f172a !important;
+      stroke: #2d3748 !important;
+    }
+
+    .diagram-stage svg .er.attributeLabel {
+      fill: #e5e7eb !important;
+      font-size: 13px !important;
+      font-family: var(--font-mono) !important;
+    }
+
+    .diagram-stage svg .er.relationshipLine {
+      stroke: #60a5fa !important;
+      stroke-width: 2.5px !important;
+    }
+
+    .diagram-stage svg .er.relationshipLabel {
+      fill: #93c5fd !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+    }
+
+    /* Instructions Overlay */
+    .diagram-hint {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+
+    /* Loading Spinner */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(9, 13, 22, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+      z-index: 20;
     }
 
     /* Grid Layout for Relational Schema Explorer */
@@ -392,22 +569,9 @@
       border: 1px solid var(--border-color);
     }
 
-    /* SQL Code Block */
-    .code-box {
-      background: #0d1117;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 1.5rem;
-      font-family: var(--font-mono);
-      font-size: 0.875rem;
-      color: #e6edf3;
-      overflow-x: auto;
-      line-height: 1.6;
-    }
-
     footer {
       text-align: center;
-      padding: 2rem;
+      padding: 1.5rem;
       border-top: 1px solid var(--border-color);
       color: var(--text-muted);
       font-size: 0.85rem;
@@ -425,7 +589,7 @@
       </div>
     </div>
     <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('erd')">Conceptual ERD</button>
+      <button class="tab-btn active" onclick="switchTab('erd')">Interactive ERD</button>
       <button class="tab-btn" onclick="switchTab('schema')">3NF Schema Explorer</button>
       <button class="tab-btn" onclick="switchTab('rules')">Business Integrity Rules</button>
       <button class="tab-btn" onclick="switchTab('viva')">Viva Q&A Defense</button>
@@ -437,7 +601,7 @@
     <div class="hero-banner">
       <div class="hero-text">
         <h1>Healthcare Relational Database Architecture</h1>
-        <p>Enterprise conceptual and normalized relational model resolving appointment collisions, fragmented medical histories, exclusive bed management, and unified outpatient & inpatient billing.</p>
+        <p>3NF Normalized Relational Model resolving appointment collisions, fragmented medical histories, exclusive bed occupancy, and unified outpatient & inpatient billing.</p>
       </div>
       <div class="stat-pills">
         <div class="stat-pill">
@@ -457,167 +621,38 @@
 
     <!-- TAB 1: ER DIAGRAM -->
     <div id="tab-erd" class="tab-content active">
-      <div class="diagram-container">
-        <div class="mermaid">
-erDiagram
-    DEPARTMENT ||--o{ DOCTOR : "employs"
-    DEPARTMENT ||--o{ WARD : "manages"
-    DEPARTMENT ||--o{ LAB_TEST : "categorizes"
-    
-    DOCTOR ||--o{ DOCTOR_SCHEDULE : "maintains"
-    DOCTOR ||--o{ APPOINTMENT : "scheduled_for"
-    DOCTOR ||--o{ CONSULTATION : "conducts"
-    DOCTOR ||--o{ ADMISSION : "admits"
-    DOCTOR ||--o{ TEST_ORDER : "authorizes"
-    DOCTOR ||--o{ PRESCRIPTION : "prescribes"
-    
-    PATIENT ||--o{ APPOINTMENT : "books"
-    PATIENT ||--o{ CONSULTATION : "participates_in"
-    PATIENT ||--o{ ADMISSION : "admitted_to"
-    PATIENT ||--o{ TEST_ORDER : "undergoes"
-    PATIENT ||--o{ PRESCRIPTION : "receives"
-    PATIENT ||--o{ BILL : "incurred_by"
-    
-    APPOINTMENT ||--o| CONSULTATION : "initiates"
-    APPOINTMENT ||--o| BILL : "generates_op_bill"
-    
-    CONSULTATION ||--o{ DIAGNOSIS : "determines"
-    CONSULTATION ||--o{ PRESCRIPTION : "issues"
-    CONSULTATION ||--o{ TEST_ORDER : "requests"
-    
-    PRESCRIPTION ||--|{ PRESCRIPTION_ITEM : "contains"
-    
-    LAB_TEST ||--o{ TEST_ORDER : "specifies"
-    
-    WARD ||--|{ BED : "houses"
-    BED ||--o{ ADMISSION : "assigned_during"
-    ADMISSION ||--o| BILL : "generates_ip_bill"
-    
-    BILL ||--o{ PAYMENT : "settled_via"
+      
+      <!-- Module Filter & Zoom Bar -->
+      <div class="erd-controls-bar">
+        <div class="module-tabs">
+          <button class="module-btn active" onclick="switchModule('all')">🌟 All 16 Entities</button>
+          <button class="module-btn" onclick="switchModule('outpatient')">🩺 Outpatient & Consultations</button>
+          <button class="module-btn" onclick="switchModule('inpatient')">🏥 Inpatient & Beds</button>
+          <button class="module-btn" onclick="switchModule('lab')">🔬 Diagnostics & Lab</button>
+          <button class="module-btn" onclick="switchModule('billing')">💳 Billing & Payments</button>
+        </div>
 
-    DEPARTMENT {
-        int department_id PK
-        varchar department_name
-        varchar building_floor
-        varchar head_of_department
-    }
-
-    DOCTOR {
-        int doctor_id PK
-        int department_id FK
-        varchar first_name
-        varchar last_name
-        varchar specialization
-        numeric consultation_fee
-    }
-
-    DOCTOR_SCHEDULE {
-        int schedule_id PK
-        int doctor_id FK
-        varchar day_of_week
-        time start_time
-        time end_time
-    }
-
-    PATIENT {
-        int patient_id PK
-        varchar first_name
-        varchar last_name
-        date date_of_birth
-        varchar blood_group
-        varchar phone
-    }
-
-    APPOINTMENT {
-        int appointment_id PK
-        int patient_id FK
-        int doctor_id FK
-        date appointment_date
-        time appointment_time
-        varchar status
-    }
-
-    CONSULTATION {
-        int consultation_id PK
-        int appointment_id FK
-        varchar blood_pressure
-        numeric temperature_celsius
-        text symptoms
-    }
-
-    DIAGNOSIS {
-        int diagnosis_id PK
-        int consultation_id FK
-        varchar icd_code
-        varchar diagnosis_name
-    }
-
-    PRESCRIPTION {
-        int prescription_id PK
-        int consultation_id FK
-        date issue_date
-    }
-
-    PRESCRIPTION_ITEM {
-        int item_id PK
-        int prescription_id FK
-        varchar medicine_name
-        varchar dosage_form
-        int duration_days
-    }
-
-    LAB_TEST {
-        int test_id PK
-        int department_id FK
-        varchar test_name
-        numeric standard_price
-    }
-
-    TEST_ORDER {
-        int order_id PK
-        int consultation_id FK
-        int test_id FK
-        text test_result
-        varchar abnormal_flag
-    }
-
-    WARD {
-        int ward_id PK
-        int department_id FK
-        varchar ward_name
-        numeric daily_rate
-    }
-
-    BED {
-        int bed_id PK
-        int ward_id FK
-        varchar bed_number
-        varchar status
-    }
-
-    ADMISSION {
-        int admission_id PK
-        int patient_id FK
-        int bed_id FK
-        timestamp admission_date
-        timestamp discharge_date
-    }
-
-    BILL {
-        int bill_id PK
-        int patient_id FK
-        numeric total_amount
-        varchar payment_status
-    }
-
-    PAYMENT {
-        int payment_id PK
-        int bill_id FK
-        numeric amount_paid
-        varchar payment_method
-    }
+        <div class="zoom-toolbar">
+          <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">➕</button>
+          <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">➖</button>
+          <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">🔄 100%</button>
+          <button class="zoom-btn" onclick="fitView()" title="Fit View">🔍 Fit</button>
+          <span class="zoom-indicator" id="zoomLevel">120%</span>
         </div>
       </div>
+
+      <!-- Diagram Viewport with Pan & Zoom -->
+      <div class="diagram-viewport" id="viewport">
+        <div class="loading-overlay" id="loadingOverlay">Rendering ER Diagram...</div>
+        <div class="diagram-hint">
+          <span>🖱️ <strong>Click & Drag</strong> to Pan</span> • <span>🔄 <strong>Scroll Wheel</strong> to Zoom</span>
+        </div>
+
+        <div class="diagram-stage" id="stage">
+          <!-- Dynamically injected SVG will appear here -->
+        </div>
+      </div>
+
     </div>
 
     <!-- TAB 2: SCHEMA EXPLORER -->
@@ -926,28 +961,535 @@ erDiagram
   </footer>
 
   <script>
+    // Mermaid Diagram Definitions per Module
+    const diagrams = {
+      all: `erDiagram
+    DEPARTMENT ||--o{ DOCTOR : "employs"
+    DEPARTMENT ||--o{ WARD : "manages"
+    DEPARTMENT ||--o{ LAB_TEST : "categorizes"
+    DOCTOR ||--o{ DOCTOR_SCHEDULE : "maintains"
+    DOCTOR ||--o{ APPOINTMENT : "scheduled_for"
+    DOCTOR ||--o{ CONSULTATION : "conducts"
+    DOCTOR ||--o{ ADMISSION : "admits"
+    DOCTOR ||--o{ TEST_ORDER : "authorizes"
+    DOCTOR ||--o{ PRESCRIPTION : "prescribes"
+    PATIENT ||--o{ APPOINTMENT : "books"
+    PATIENT ||--o{ CONSULTATION : "participates_in"
+    PATIENT ||--o{ ADMISSION : "admitted_to"
+    PATIENT ||--o{ TEST_ORDER : "undergoes"
+    PATIENT ||--o{ PRESCRIPTION : "receives"
+    PATIENT ||--o{ BILL : "incurred_by"
+    APPOINTMENT ||--o| CONSULTATION : "initiates"
+    APPOINTMENT ||--o| BILL : "generates_op_bill"
+    CONSULTATION ||--o{ DIAGNOSIS : "determines"
+    CONSULTATION ||--o{ PRESCRIPTION : "issues"
+    CONSULTATION ||--o{ TEST_ORDER : "requests"
+    PRESCRIPTION ||--|{ PRESCRIPTION_ITEM : "contains"
+    LAB_TEST ||--o{ TEST_ORDER : "specifies"
+    WARD ||--|{ BED : "houses"
+    BED ||--o{ ADMISSION : "assigned_during"
+    ADMISSION ||--o| BILL : "generates_ip_bill"
+    BILL ||--o{ PAYMENT : "settled_via"
+
+    DEPARTMENT {
+        int department_id PK
+        string department_name
+        string building_floor
+        string head_of_department
+    }
+    DOCTOR {
+        int doctor_id PK
+        int department_id FK
+        string first_name
+        string last_name
+        string specialization
+        numeric consultation_fee
+    }
+    DOCTOR_SCHEDULE {
+        int schedule_id PK
+        int doctor_id FK
+        string day_of_week
+        string start_time
+        string end_time
+    }
+    PATIENT {
+        int patient_id PK
+        string first_name
+        string last_name
+        date date_of_birth
+        string blood_group
+        string phone
+    }
+    APPOINTMENT {
+        int appointment_id PK
+        int patient_id FK
+        int doctor_id FK
+        date appointment_date
+        string appointment_time
+        string status
+    }
+    CONSULTATION {
+        int consultation_id PK
+        int appointment_id FK
+        string blood_pressure
+        numeric temperature_celsius
+        string symptoms
+    }
+    DIAGNOSIS {
+        int diagnosis_id PK
+        int consultation_id FK
+        string icd_code
+        string diagnosis_name
+    }
+    PRESCRIPTION {
+        int prescription_id PK
+        int consultation_id FK
+        date issue_date
+    }
+    PRESCRIPTION_ITEM {
+        int item_id PK
+        int prescription_id FK
+        string medicine_name
+        string dosage_form
+        int duration_days
+    }
+    LAB_TEST {
+        int test_id PK
+        int department_id FK
+        string test_name
+        numeric standard_price
+    }
+    TEST_ORDER {
+        int order_id PK
+        int consultation_id FK
+        int test_id FK
+        string test_result
+        string abnormal_flag
+    }
+    WARD {
+        int ward_id PK
+        int department_id FK
+        string ward_name
+        numeric daily_rate
+    }
+    BED {
+        int bed_id PK
+        int ward_id FK
+        string bed_number
+        string status
+    }
+    ADMISSION {
+        int admission_id PK
+        int patient_id FK
+        int bed_id FK
+        string admission_date
+        string discharge_date
+    }
+    BILL {
+        int bill_id PK
+        int patient_id FK
+        numeric total_amount
+        string payment_status
+    }
+    PAYMENT {
+        int payment_id PK
+        int bill_id FK
+        numeric amount_paid
+        string payment_method
+    }`,
+
+      outpatient: `erDiagram
+    DEPARTMENT ||--o{ DOCTOR : "employs"
+    DOCTOR ||--o{ DOCTOR_SCHEDULE : "maintains"
+    DOCTOR ||--o{ APPOINTMENT : "scheduled_for"
+    PATIENT ||--o{ APPOINTMENT : "books"
+    APPOINTMENT ||--o| CONSULTATION : "initiates"
+    DOCTOR ||--o{ CONSULTATION : "conducts"
+    PATIENT ||--o{ CONSULTATION : "undergoes"
+    CONSULTATION ||--o{ DIAGNOSIS : "identifies"
+    CONSULTATION ||--o{ PRESCRIPTION : "issues"
+    PRESCRIPTION ||--|{ PRESCRIPTION_ITEM : "prescribes"
+
+    DEPARTMENT {
+        int department_id PK
+        string department_name
+        string head_of_department
+    }
+    DOCTOR {
+        int doctor_id PK
+        int department_id FK
+        string first_name
+        string last_name
+        string specialization
+        numeric consultation_fee
+    }
+    DOCTOR_SCHEDULE {
+        int schedule_id PK
+        int doctor_id FK
+        string day_of_week
+        string start_time
+        string end_time
+    }
+    PATIENT {
+        int patient_id PK
+        string first_name
+        string last_name
+        string phone
+        string blood_group
+    }
+    APPOINTMENT {
+        int appointment_id PK
+        int patient_id FK
+        int doctor_id FK
+        date appointment_date
+        string appointment_time
+        string status
+    }
+    CONSULTATION {
+        int consultation_id PK
+        int appointment_id FK
+        string blood_pressure
+        numeric temperature_celsius
+        string symptoms
+        string clinical_notes
+    }
+    DIAGNOSIS {
+        int diagnosis_id PK
+        int consultation_id FK
+        string icd_code
+        string diagnosis_name
+    }
+    PRESCRIPTION {
+        int prescription_id PK
+        int consultation_id FK
+        date issue_date
+        string special_instructions
+    }
+    PRESCRIPTION_ITEM {
+        int item_id PK
+        int prescription_id FK
+        string medicine_name
+        string dosage_form
+        string frequency
+        int duration_days
+    }`,
+
+      inpatient: `erDiagram
+    DEPARTMENT ||--o{ WARD : "administers"
+    WARD ||--|{ BED : "contains"
+    BED ||--o{ ADMISSION : "allocated_for"
+    PATIENT ||--o{ ADMISSION : "admitted_as"
+    DOCTOR ||--o{ ADMISSION : "admits"
+
+    DEPARTMENT {
+        int department_id PK
+        string department_name
+        string building_floor
+    }
+    WARD {
+        int ward_id PK
+        int department_id FK
+        string ward_name
+        string ward_type
+        numeric daily_rate
+        int total_beds
+    }
+    BED {
+        int bed_id PK
+        int ward_id FK
+        string bed_number
+        string status
+    }
+    PATIENT {
+        int patient_id PK
+        string first_name
+        string last_name
+        string phone
+        string emergency_contact_phone
+    }
+    DOCTOR {
+        int doctor_id PK
+        string first_name
+        string last_name
+        string specialization
+    }
+    ADMISSION {
+        int admission_id PK
+        int patient_id FK
+        int admitting_doctor_id FK
+        int bed_id FK
+        string admission_date
+        string discharge_date
+        string admission_reason
+        string status
+    }`,
+
+      lab: `erDiagram
+    DEPARTMENT ||--o{ LAB_TEST : "catalogs"
+    LAB_TEST ||--o{ TEST_ORDER : "instantiates"
+    CONSULTATION ||--o{ TEST_ORDER : "requests"
+    PATIENT ||--o{ TEST_ORDER : "undergoes"
+    DOCTOR ||--o{ TEST_ORDER : "authorizes"
+
+    DEPARTMENT {
+        int department_id PK
+        string department_name
+    }
+    LAB_TEST {
+        int test_id PK
+        int department_id FK
+        string test_name
+        string test_code
+        string test_category
+        numeric standard_price
+        string sample_type
+    }
+    CONSULTATION {
+        int consultation_id PK
+        int patient_id FK
+        int doctor_id FK
+        string consultation_timestamp
+    }
+    PATIENT {
+        int patient_id PK
+        string first_name
+        string last_name
+    }
+    DOCTOR {
+        int doctor_id PK
+        string first_name
+        string last_name
+    }
+    TEST_ORDER {
+        int order_id PK
+        int consultation_id FK
+        int patient_id FK
+        int test_id FK
+        int ordered_by_doctor_id FK
+        string test_result
+        string abnormal_flag
+        string order_status
+    }`,
+
+      billing: `erDiagram
+    PATIENT ||--o{ BILL : "billed_to"
+    APPOINTMENT ||--o| BILL : "generates_op_bill"
+    ADMISSION ||--o| BILL : "generates_ip_bill"
+    BILL ||--o{ PAYMENT : "settled_via"
+
+    PATIENT {
+        int patient_id PK
+        string first_name
+        string last_name
+        string phone
+    }
+    APPOINTMENT {
+        int appointment_id PK
+        date appointment_date
+    }
+    ADMISSION {
+        int admission_id PK
+        string admission_date
+        string discharge_date
+    }
+    BILL {
+        int bill_id PK
+        int patient_id FK
+        int appointment_id FK
+        int admission_id FK
+        date bill_date
+        numeric consultation_charges
+        numeric test_charges
+        numeric bed_charges
+        numeric pharmacy_charges
+        numeric total_amount
+        string payment_status
+    }
+    PAYMENT {
+        int payment_id PK
+        int bill_id FK
+        string payment_timestamp
+        numeric amount_paid
+        string payment_method
+        string transaction_reference
+    }`
+    };
+
+    // Initialize Mermaid
     mermaid.initialize({
-      startOnLoad: true,
+      startOnLoad: false,
       theme: 'dark',
+      securityLevel: 'loose',
+      er: {
+        useMaxWidth: false,
+        layoutDirection: 'TB',
+        minEntityWidth: 150,
+        minEntityHeight: 80,
+        entityPadding: 16,
+        stroke: '#3b82f6',
+        fill: '#1a2234',
+        fontSize: 14
+      },
       themeVariables: {
         darkMode: true,
-        background: '#111827',
-        primaryColor: '#1f2937',
+        background: '#090d16',
+        primaryColor: '#1e293b',
         primaryTextColor: '#f9fafb',
         primaryBorderColor: '#3b82f6',
         lineColor: '#60a5fa',
-        secondaryColor: '#1e293b',
+        secondaryColor: '#111827',
         tertiaryColor: '#0f172a'
       }
     });
 
+    // Pan and Zoom State
+    let currentScale = 1.15;
+    let panX = 40;
+    let panY = 30;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let currentModule = 'all';
+
+    const viewport = document.getElementById('viewport');
+    const stage = document.getElementById('stage');
+    const zoomIndicator = document.getElementById('zoomLevel');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    function updateTransform() {
+      stage.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
+      zoomIndicator.innerText = `${Math.round(currentScale * 100)}%`;
+    }
+
+    function zoomIn() {
+      currentScale = Math.min(currentScale + 0.2, 3.0);
+      updateTransform();
+    }
+
+    function zoomOut() {
+      currentScale = Math.max(currentScale - 0.2, 0.4);
+      updateTransform();
+    }
+
+    function resetZoom() {
+      if (currentModule === 'all') {
+        currentScale = 1.1;
+        panX = 30;
+        panY = 20;
+      } else {
+        currentScale = 1.35;
+        panX = 50;
+        panY = 30;
+      }
+      updateTransform();
+    }
+
+    function fitView() {
+      const svg = stage.querySelector('svg');
+      if (svg) {
+        const svgBox = svg.getBoundingClientRect();
+        const vpBox = viewport.getBoundingClientRect();
+        const scaleX = (vpBox.width - 60) / (svgBox.width / currentScale);
+        const scaleY = (vpBox.height - 60) / (svgBox.height / currentScale);
+        currentScale = Math.max(Math.min(scaleX, scaleY, 1.8), 0.5);
+        panX = 30;
+        panY = 20;
+        updateTransform();
+      } else {
+        resetZoom();
+      }
+    }
+
+    // Dynamic Diagram Renderer
+    async function renderDiagram(modKey) {
+      currentModule = modKey;
+      loadingOverlay.style.display = 'flex';
+      
+      const code = diagrams[modKey];
+      const uniqueId = 'svg-render-' + Date.now();
+      
+      try {
+        const { svg } = await mermaid.render(uniqueId, code);
+        stage.innerHTML = svg;
+        
+        // Custom scale tuning per module
+        if (modKey === 'all') {
+          currentScale = 1.1;
+          panX = 30;
+          panY = 20;
+        } else {
+          currentScale = 1.35;
+          panX = 50;
+          panY = 30;
+        }
+        updateTransform();
+      } catch (err) {
+        console.error('Mermaid render error:', err);
+        stage.innerHTML = `<div style="color:#f87171; padding:2rem; font-family:var(--font-mono)">⚠️ Error rendering diagram: ${err.message}</div>`;
+      } finally {
+        loadingOverlay.style.display = 'none';
+      }
+    }
+
+    function switchModule(modName) {
+      document.querySelectorAll('.module-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderDiagram(modName);
+    }
+
+    // Mouse Dragging to Pan
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.zoom-toolbar') || e.target.closest('.module-tabs')) return;
+      isDragging = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Mouse Wheel to Zoom
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      const newScale = Math.max(0.3, Math.min(3.0, currentScale * zoomFactor));
+      
+      const rect = viewport.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      panX = mouseX - (mouseX - panX) * (newScale / currentScale);
+      panY = mouseY - (mouseY - panY) * (newScale / currentScale);
+      currentScale = newScale;
+      
+      updateTransform();
+    }, { passive: false });
+
+    // Top Navigation Tabs
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       
       document.getElementById('tab-' + tabId).classList.add('active');
       event.target.classList.add('active');
+
+      if (tabId === 'erd') {
+        setTimeout(updateTransform, 50);
+      }
     }
+
+    // Initial render on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderDiagram('all');
+    });
   </script>
 </body>
 </html>
