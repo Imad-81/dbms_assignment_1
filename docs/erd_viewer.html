@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAPCMS - Interactive ER Diagram & Relational Schema Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --bg-card-hover: #283548;
+      --border-color: #374151;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-rose: #f43f5e;
+      --badge-pk: #ef4444;
+      --badge-fk: #3b82f6;
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    header {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      font-weight: 500;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-secondary);
+      padding: 0.35rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-blue);
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.9));
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-text h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      background: linear-gradient(135deg, #ffffff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-text p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      max-width: 800px;
+    }
+
+    .stat-pills {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .stat-pill {
+      background: rgba(31, 41, 55, 0.8);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Diagram Section */
+    .diagram-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 600px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .diagram-container svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Grid Layout for Relational Schema Explorer */
+    .schema-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-header {
+      padding: 1rem 1.25rem;
+      background: rgba(17, 24, 39, 0.6);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-name {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .table-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .card-body {
+      padding: 0.75rem 1.25rem;
+      flex: 1;
+    }
+
+    .col-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .col-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      background: rgba(17, 24, 39, 0.3);
+    }
+
+    .col-name-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .col-name {
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+
+    .key-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .key-pk {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .key-fk {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+
+    .col-type {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .card-footer {
+      padding: 0.75rem 1.25rem;
+      background: rgba(17, 24, 39, 0.4);
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Business Rules Table */
+    .rules-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .rules-table th, .rules-table td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .rules-table th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .rules-table tr:hover {
+      background: rgba(59, 130, 246, 0.04);
+    }
+
+    .code-tag {
+      font-family: var(--font-mono);
+      background: rgba(17, 24, 39, 0.7);
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      color: #93c5fd;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-color);
+    }
+
+    /* SQL Code Block */
+    .code-box {
+      background: #0d1117;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: #e6edf3;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">H+</div>
+      <div>
+        <div class="brand-title">Hospital Appointment & Patient Care DBMS</div>
+        <div class="brand-subtitle">Review 1 Deliverables — PostgreSQL Relational Schema</div>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('erd')">Conceptual ERD</button>
+      <button class="tab-btn" onclick="switchTab('schema')">3NF Schema Explorer</button>
+      <button class="tab-btn" onclick="switchTab('rules')">Business Integrity Rules</button>
+      <button class="tab-btn" onclick="switchTab('viva')">Viva Q&A Defense</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <div class="hero-banner">
+      <div class="hero-text">
+        <h1>Healthcare Relational Database Architecture</h1>
+        <p>Enterprise conceptual and normalized relational model resolving appointment collisions, fragmented medical histories, exclusive bed management, and unified outpatient & inpatient billing.</p>
+      </div>
+      <div class="stat-pills">
+        <div class="stat-pill">
+          <div class="stat-number">16</div>
+          <div class="stat-label">3NF Entities</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">ACID Compliant</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-number">Postgres</div>
+          <div class="stat-label">Target Engine</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: ER DIAGRAM -->
+    <div id="tab-erd" class="tab-content active">
+      <div class="diagram-container">
+        <div class="mermaid">
+erDiagram
+    DEPARTMENT ||--o{ DOCTOR : "employs"
+    DEPARTMENT ||--o{ WARD : "manages"
+    DEPARTMENT ||--o{ LAB_TEST : "categorizes"
+    
+    DOCTOR ||--o{ DOCTOR_SCHEDULE : "maintains"
+    DOCTOR ||--o{ APPOINTMENT : "scheduled_for"
+    DOCTOR ||--o{ CONSULTATION : "conducts"
+    DOCTOR ||--o{ ADMISSION : "admits"
+    DOCTOR ||--o{ TEST_ORDER : "authorizes"
+    DOCTOR ||--o{ PRESCRIPTION : "prescribes"
+    
+    PATIENT ||--o{ APPOINTMENT : "books"
+    PATIENT ||--o{ CONSULTATION : "participates_in"
+    PATIENT ||--o{ ADMISSION : "admitted_to"
+    PATIENT ||--o{ TEST_ORDER : "undergoes"
+    PATIENT ||--o{ PRESCRIPTION : "receives"
+    PATIENT ||--o{ BILL : "incurred_by"
+    
+    APPOINTMENT ||--o| CONSULTATION : "initiates"
+    APPOINTMENT ||--o| BILL : "generates_op_bill"
+    
+    CONSULTATION ||--o{ DIAGNOSIS : "determines"
+    CONSULTATION ||--o{ PRESCRIPTION : "issues"
+    CONSULTATION ||--o{ TEST_ORDER : "requests"
+    
+    PRESCRIPTION ||--|{ PRESCRIPTION_ITEM : "contains"
+    
+    LAB_TEST ||--o{ TEST_ORDER : "specifies"
+    
+    WARD ||--|{ BED : "houses"
+    BED ||--o{ ADMISSION : "assigned_during"
+    ADMISSION ||--o| BILL : "generates_ip_bill"
+    
+    BILL ||--o{ PAYMENT : "settled_via"
+
+    DEPARTMENT {
+        int department_id PK
+        varchar department_name
+        varchar building_floor
+        varchar head_of_department
+    }
+
+    DOCTOR {
+        int doctor_id PK
+        int department_id FK
+        varchar first_name
+        varchar last_name
+        varchar specialization
+        numeric consultation_fee
+    }
+
+    DOCTOR_SCHEDULE {
+        int schedule_id PK
+        int doctor_id FK
+        varchar day_of_week
+        time start_time
+        time end_time
+    }
+
+    PATIENT {
+        int patient_id PK
+        varchar first_name
+        varchar last_name
+        date date_of_birth
+        varchar blood_group
+        varchar phone
+    }
+
+    APPOINTMENT {
+        int appointment_id PK
+        int patient_id FK
+        int doctor_id FK
+        date appointment_date
+        time appointment_time
+        varchar status
+    }
+
+    CONSULTATION {
+        int consultation_id PK
+        int appointment_id FK
+        varchar blood_pressure
+        numeric temperature_celsius
+        text symptoms
+    }
+
+    DIAGNOSIS {
+        int diagnosis_id PK
+        int consultation_id FK
+        varchar icd_code
+        varchar diagnosis_name
+    }
+
+    PRESCRIPTION {
+        int prescription_id PK
+        int consultation_id FK
+        date issue_date
+    }
+
+    PRESCRIPTION_ITEM {
+        int item_id PK
+        int prescription_id FK
+        varchar medicine_name
+        varchar dosage_form
+        int duration_days
+    }
+
+    LAB_TEST {
+        int test_id PK
+        int department_id FK
+        varchar test_name
+        numeric standard_price
+    }
+
+    TEST_ORDER {
+        int order_id PK
+        int consultation_id FK
+        int test_id FK
+        text test_result
+        varchar abnormal_flag
+    }
+
+    WARD {
+        int ward_id PK
+        int department_id FK
+        varchar ward_name
+        numeric daily_rate
+    }
+
+    BED {
+        int bed_id PK
+        int ward_id FK
+        varchar bed_number
+        varchar status
+    }
+
+    ADMISSION {
+        int admission_id PK
+        int patient_id FK
+        int bed_id FK
+        timestamp admission_date
+        timestamp discharge_date
+    }
+
+    BILL {
+        int bill_id PK
+        int patient_id FK
+        numeric total_amount
+        varchar payment_status
+    }
+
+    PAYMENT {
+        int payment_id PK
+        int bill_id FK
+        numeric amount_paid
+        varchar payment_method
+    }
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SCHEMA EXPLORER -->
+    <div id="tab-schema" class="tab-content">
+      <div class="schema-grid">
+
+        <!-- Department -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">department</div>
+            <span class="table-badge">Master</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">department_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">department_name</span></div><span class="col-type">VARCHAR(100) UQ</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">building_floor</span></div><span class="col-type">VARCHAR(50)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">head_of_department</span></div><span class="col-type">VARCHAR(100)</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">3NF Normalized • 0 Transitive Dependencies</div>
+        </div>
+
+        <!-- Doctor -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">doctor</div>
+            <span class="table-badge">Provider</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">doctor_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">department_id</span></div><span class="col-type">INT &rarr; department</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">first_name, last_name</span></div><span class="col-type">VARCHAR(50)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">specialization</span></div><span class="col-type">VARCHAR(100)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">consultation_fee</span></div><span class="col-type">NUMERIC(10,2) &ge; 0</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">license_number</span></div><span class="col-type">VARCHAR(50) UQ</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">3NF Normalized • Department attributes isolated</div>
+        </div>
+
+        <!-- Doctor Schedule -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">doctor_schedule</div>
+            <span class="table-badge">Roster</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">schedule_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">doctor_id</span></div><span class="col-type">INT &rarr; doctor</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">day_of_week</span></div><span class="col-type">VARCHAR(15)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">start_time, end_time</span></div><span class="col-type">TIME (start < end)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">slot_duration_minutes</span></div><span class="col-type">INT &gt; 0</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">max_patients</span></div><span class="col-type">INT &gt; 0</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">Prevents shift overlap • Unique(doctor_id, day, start_time)</div>
+        </div>
+
+        <!-- Patient -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">patient</div>
+            <span class="table-badge">Master</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">patient_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">first_name, last_name</span></div><span class="col-type">VARCHAR(50)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">date_of_birth</span></div><span class="col-type">DATE &le; TODAY</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">gender, blood_group</span></div><span class="col-type">ENUM / CHECK</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">phone</span></div><span class="col-type">VARCHAR(20) UQ</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">emergency_contact</span></div><span class="col-type">VARCHAR(100)</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">Atomic scalar attributes • Unique phone & email</div>
+        </div>
+
+        <!-- Appointment -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">appointment</div>
+            <span class="table-badge">Transaction</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">appointment_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">patient_id</span></div><span class="col-type">INT &rarr; patient</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">doctor_id</span></div><span class="col-type">INT &rarr; doctor</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">appointment_date, time</span></div><span class="col-type">DATE, TIME</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">status</span></div><span class="col-type">ENUM (7 states)</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">UNIQUE(doctor_id, appointment_date, appointment_time)</div>
+        </div>
+
+        <!-- Consultation -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">consultation</div>
+            <span class="table-badge">Clinical</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">consultation_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">appointment_id</span></div><span class="col-type">INT UQ &rarr; appointment</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">patient_id, doctor_id</span></div><span class="col-type">INT &rarr; patient, doctor</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">vitals (BP, Temp, SpO2)</span></div><span class="col-type">CHECK constraints</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">symptoms, clinical_notes</span></div><span class="col-type">TEXT NOT NULL</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">1:1 with Appointment • Biological bounds checked</div>
+        </div>
+
+        <!-- Diagnosis -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">diagnosis</div>
+            <span class="table-badge">Clinical</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">diagnosis_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">consultation_id</span></div><span class="col-type">INT &rarr; consultation</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">icd_code</span></div><span class="col-type">VARCHAR(20)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">diagnosis_name</span></div><span class="col-type">VARCHAR(200)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">diagnosis_type</span></div><span class="col-type">PRIMARY / SECONDARY</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">Supports multiple diagnoses per consultation encounter</div>
+        </div>
+
+        <!-- Prescription & Items -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">prescription_item</div>
+            <span class="table-badge">Pharmacy</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">item_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">prescription_id</span></div><span class="col-type">INT &rarr; prescription</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">medicine_name</span></div><span class="col-type">VARCHAR(150)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">dosage_form, strength</span></div><span class="col-type">VARCHAR(50)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">frequency, duration_days</span></div><span class="col-type">INT &gt; 0</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">1NF / 2NF / 3NF Compliant line items</div>
+        </div>
+
+        <!-- Wards & Beds -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">bed</div>
+            <span class="table-badge">Facility</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">bed_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">ward_id</span></div><span class="col-type">INT &rarr; ward</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">bed_number</span></div><span class="col-type">VARCHAR(20)</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">status</span></div><span class="col-type">AVAILABLE / OCCUPIED</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">UNIQUE(ward_id, bed_number) • Real-time occupancy state</div>
+        </div>
+
+        <!-- Admission -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">admission</div>
+            <span class="table-badge">Inpatient</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">admission_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">patient_id, bed_id</span></div><span class="col-type">INT &rarr; patient, bed</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">admitting_doctor_id</span></div><span class="col-type">INT &rarr; doctor</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">admission_date</span></div><span class="col-type">TIMESTAMPTZ</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">discharge_date</span></div><span class="col-type">CHECK &ge; admission_date</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">Chronological validation • 1 active patient per bed</div>
+        </div>
+
+        <!-- Bill -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">bill</div>
+            <span class="table-badge">Financial</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">bill_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">patient_id</span></div><span class="col-type">INT &rarr; patient</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">appointment_id, admission_id</span></div><span class="col-type">INT Nullable</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">consultation/test/bed charges</span></div><span class="col-type">NUMERIC &ge; 0</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">total_amount, status</span></div><span class="col-type">NUMERIC &ge; 0, ENUM</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">Unifies OP & IP billing • Itemized breakdown</div>
+        </div>
+
+        <!-- Payment -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="table-name">payment</div>
+            <span class="table-badge">Settlement</span>
+          </div>
+          <div class="card-body">
+            <ul class="col-list">
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-pk">PK</span><span class="col-name">payment_id</span></div><span class="col-type">SERIAL</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="key-badge key-fk">FK</span><span class="col-name">bill_id</span></div><span class="col-type">INT &rarr; bill</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">amount_paid</span></div><span class="col-type">NUMERIC &gt; 0</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">payment_method</span></div><span class="col-type">CASH, CARD, UPI, TPA</span></li>
+              <li class="col-item"><div class="col-name-wrapper"><span class="col-name">transaction_reference</span></div><span class="col-type">VARCHAR(100)</span></li>
+            </ul>
+          </div>
+          <div class="card-footer">Supports multi-tender & partial installment receipts</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: BUSINESS RULES -->
+    <div id="tab-rules" class="tab-content">
+      <table class="rules-table">
+        <thead>
+          <tr>
+            <th>Rule ID</th>
+            <th>Domain Business Rule</th>
+            <th>Database Integrity Enforcement</th>
+            <th>Anomaly Prevented</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="code-tag">BR-1</span></td>
+            <td><strong>No Overlapping Doctor Appointments</strong><br>A doctor cannot be scheduled for two concurrent consultations.</td>
+            <td><span class="code-tag">UNIQUE (doctor_id, appointment_date, appointment_time)</span></td>
+            <td>Double booking and schedule clash anomalies.</td>
+          </tr>
+          <tr>
+            <td><span class="code-tag">BR-2</span></td>
+            <td><strong>Exclusive Bed Occupancy</strong><br>Only one active patient may occupy an inpatient bed at any point in time.</td>
+            <td>Bed status tracking: <span class="code-tag">status = 'OCCUPIED'</span> during admission; admission requires available bed.</td>
+            <td>Bed allocation collision and ghost bed vacancies.</td>
+          </tr>
+          <tr>
+            <td><span class="code-tag">BR-3</span></td>
+            <td><strong>Chronological Admission Bounds</strong><br>Discharge timestamp cannot precede admission timestamp.</td>
+            <td><span class="code-tag">CHECK (discharge_date IS NULL OR discharge_date >= admission_date)</span></td>
+            <td>Negative inpatient stay duration and erroneous billing.</td>
+          </tr>
+          <tr>
+            <td><span class="code-tag">BR-4</span></td>
+            <td><strong>Positive Financial Balances</strong><br>All rates, bill line items, and payment amounts must be non-negative.</td>
+            <td><span class="code-tag">CHECK (amount_paid > 0.00)</span>, <span class="code-tag">CHECK (total_amount >= 0.00)</span></td>
+            <td>Negative billing and ledger distortion.</td>
+          </tr>
+          <tr>
+            <td><span class="code-tag">BR-5</span></td>
+            <td><strong>Biological & Demographic Validity</strong><br>DOB must be in past; vitals must fall within physiological human bounds.</td>
+            <td><span class="code-tag">CHECK (dob <= TODAY)</span>, <span class="code-tag">CHECK (temp BETWEEN 30 AND 45)</span></td>
+            <td>Corrupt clinical history and data entry typos.</td>
+          </tr>
+          <tr>
+            <td><span class="code-tag">BR-6</span></td>
+            <td><strong>Strict 1:1 Consultation Linkage</strong><br>An appointment generates at most one medical encounter record.</td>
+            <td><span class="code-tag">appointment_id INT NOT NULL UNIQUE</span> in consultation table.</td>
+            <td>Duplicate consultation records for a single visit.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TAB 4: VIVA PREP -->
+    <div id="tab-viva" class="tab-content">
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="table-card" style="padding: 1.5rem;">
+          <h3 style="color: #60a5fa; margin-bottom: 0.5rem;">Q1: How does the schema achieve Third Normal Form (3NF)?</h3>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            <strong>Answer:</strong> Every relation is in 1NF (atomic attributes, no repeating groups) and 2NF (all non-key attributes fully functionally dependent on atomic primary keys). We eliminated all transitive dependencies ($X \to Y \to Z$) by isolating entities into dedicated relations: Doctors reference Department IDs rather than storing department metadata; Beds reference Ward IDs rather than storing per-diem rates; Prescriptions have separate line-item tables for individual drugs.
+          </p>
+        </div>
+        <div class="table-card" style="padding: 1.5rem;">
+          <h3 style="color: #60a5fa; margin-bottom: 0.5rem;">Q2: Why use PostgreSQL over simple SQLite or MySQL for this project?</h3>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            <strong>Answer:</strong> PostgreSQL provides enterprise-grade ACID transactions, custom ENUM domain types, advanced CHECK constraints with regex, transactional DDL, EXCLUDE constraints for range intervals, and scalable PL/pgSQL triggers required in Review 2 for automated bed state management.
+          </p>
+        </div>
+        <div class="table-card" style="padding: 1.5rem;">
+          <h3 style="color: #60a5fa; margin-bottom: 0.5rem;">Q3: How are Outpatient and Inpatient bills distinguished?</h3>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            <strong>Answer:</strong> The <span class="code-tag">bill</span> table includes nullable foreign keys to <span class="code-tag">appointment_id</span> (for outpatient visits) and <span class="code-tag">admission_id</span> (for inpatient stays). Itemized charges (consultation, lab, bed, pharmacy) aggregate into a net total, which is then settled via the 1:N <span class="code-tag">payment</span> receipt table.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Hospital Appointment and Patient Care Management System (HAPCMS) • DBMS Project Review 1</p>
+  </footer>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#111827',
+        primaryColor: '#1f2937',
+        primaryTextColor: '#f9fafb',
+        primaryBorderColor: '#3b82f6',
+        lineColor: '#60a5fa',
+        secondaryColor: '#1e293b',
+        tertiaryColor: '#0f172a'
+      }
+    });
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
