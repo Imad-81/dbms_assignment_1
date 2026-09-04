@@ -453,6 +453,82 @@
       margin-top: 4px;
     }
 
+    .hero-presenter-bar {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .presenter-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .presenter-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: -0.01em;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .presenter-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .presenter-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .presenter-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .presenter-id-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 7px 16px;
+      border-radius: var(--radius-sm);
+    }
+
+    .presenter-id-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .presenter-id-code {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      letter-spacing: 0.04em;
+    }
+
     /* Problem Statement Spotlight */
     .problem-callout {
       background: #f8fafc;
@@ -989,11 +1065,6 @@
       <section class="slide active" data-title="Title & Executive Brief">
         <div class="title-slide-content">
           <div>
-            <div class="hero-meta">
-              <span class="pill">COURSE: RELATIONAL DATABASE SYSTEMS</span>
-              <span class="pill">MILESTONE: REVIEW 1 (WEEK 7)</span>
-              <span class="pill">5 MARKS</span>
-            </div>
             <h1 class="hero-title">Hospital Appointment & Patient Care Management System</h1>
             <p class="hero-subtitle">
               Design and implementation of a 3NF-normalized relational database management system engineered to resolve clinical scheduling collisions, bed allocation contention, and fragmented longitudinal health records.
@@ -1017,6 +1088,20 @@
               <div class="hero-stat">
                 <span class="hero-stat-num">Zero Collisions</span>
                 <span class="hero-stat-label">Engine-level declarative integrity checks</span>
+              </div>
+            </div>
+
+            <div class="hero-presenter-bar">
+              <div class="presenter-profile">
+                <div class="presenter-avatar">SI</div>
+                <div class="presenter-meta">
+                  <span class="presenter-label">Presented by</span>
+                  <span class="presenter-name">Shaik Imaduddin</span>
+                </div>
+              </div>
+              <div class="presenter-id-badge">
+                <span class="presenter-id-title">Student ID</span>
+                <span class="presenter-id-code">25WU0101048</span>
               </div>
             </div>
           </div>
@@ -2398,7 +2483,7 @@
   // Exact Professor-Targeted Speaking Scripts for each slide
   const speakerScripts = [
     // Slide 1
-    "<p><strong>Speaker Script:</strong> Respected Faculty, good morning. Today we present Review 1 of our Database Management Systems project: <strong>The Hospital Appointment and Patient Care Management System (HAPCMS)</strong>.</p><p>Our project addresses the core challenge of healthcare administration: ensuring that outpatient consultations, inpatient wards, diagnostic laboratories, and billing operate on a single, ACID-compliant, 3NF-normalized relational foundation without collisions or data fragmentation.</p>",
+    "<p><strong>Speaker Script:</strong> Respected Faculty, good morning. I am <strong>Shaik Imaduddin</strong> (ID: <code>25WU0101048</code>). Today I present Review 1 of our Database Management Systems project: <strong>The Hospital Appointment and Patient Care Management System (HAPCMS)</strong>.</p><p>Our project addresses the core challenge of healthcare administration: ensuring that outpatient consultations, inpatient wards, diagnostic laboratories, and billing operate on a single, ACID-compliant, 3NF-normalized relational foundation without collisions or data fragmentation.</p>",
     
     // Slide 2: Problem Statement (Professor's Key Focus)
     "<p><strong>Speaker Script for Problem Statement (Deliver with Confidence):</strong> Professor, in real-world hospitals, disconnected systems cause five critical failure modes:</p><p><strong>First</strong>, schedule collisions. Without database concurrency controls, doctors get double-booked for the exact same slot.<br><strong>Second</strong>, fragmented longitudinal records. When a doctor sees a patient, past diagnoses, lab reports, and medication histories are scattered across paper slips or isolated silos.<br><strong>Third</strong>, inpatient bed contention. Patients get assigned to beds that are still physically occupied because bed statuses aren't relationally coupled with admissions.<br><strong>Fourth</strong>, diagnostic disconnect. Prescriptions and lab orders get lost between clinical visits and billing.<br><strong>Fifth</strong>, revenue leakage from unitemized bills. Our relational schema resolves every single one of these failure modes through declarative constraints at the database engine level.</p>",

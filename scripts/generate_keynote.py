@@ -21,9 +21,9 @@ SLIDES_DATA = [
     {
         "layout": "Title",
         "title": "Hospital Appointment & Patient Care Management System",
-        "body": "Problem Statement & Architectural Approach\nDBMS Project Milestone — Review 1\nDatabase Platform: PostgreSQL 16 on Neon Cloud",
+        "body": "Problem Statement & Architectural Approach\nPresented by: Shaik Imaduddin (ID: 25WU0101048)\nDBMS Project Milestone — Review 1\nDatabase Platform: PostgreSQL 16 on Neon Cloud",
         "notes": (
-            "Good morning Professor. Today we present our DBMS project: the Hospital Appointment and "
+            "Good morning Professor. I am Shaik Imaduddin (ID: 25WU0101048). Today I present our DBMS project: the Hospital Appointment and "
             "Patient Care Management System (HAPCMS). This initial presentation focuses on two core pillars: "
             "first, the acute operational problems plaguing conventional healthcare facilities, and second, "
             "our architectural approach to solving them through a normalized relational database engine."
