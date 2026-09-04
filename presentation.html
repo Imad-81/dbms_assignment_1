@@ -892,6 +892,25 @@
       fill: #2563eb;
     }
 
+    /* Fullscreen Mode Optimization */
+    :fullscreen .slide-viewport,
+    :-webkit-full-screen .slide-viewport,
+    body.fallback-fullscreen .slide-viewport {
+      max-width: 100%;
+      height: calc(100vh - 120px);
+      max-height: calc(100vh - 120px);
+      box-shadow: none;
+    }
+
+    body.fallback-fullscreen {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 99999 !important;
+      background-color: var(--bg-canvas);
+    }
+
     /* Print Styles */
     @media print {
       body {
@@ -2825,17 +2844,90 @@
     btn.classList.toggle('active');
   }
 
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.warn(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
+  function getFullscreenElement() {
+    return document.fullscreenElement ||
+           document.webkitFullscreenElement ||
+           document.webkitCurrentFullScreenElement ||
+           document.mozFullScreenElement ||
+           document.msFullscreenElement || null;
+  }
+
+  function updateFullscreenUI() {
+    const btn = document.getElementById('btn-toggle-fullscreen');
+    if (!btn) return;
+    const isFs = !!getFullscreenElement() || document.body.classList.contains('fallback-fullscreen');
+    btn.classList.toggle('active', isFs);
+    const span = btn.querySelector('span');
+    const svg = btn.querySelector('svg');
+    if (span) {
+      span.textContent = isFs ? 'Exit Fullscreen' : 'Fullscreen';
+    }
+    if (svg) {
+      svg.innerHTML = isFs
+        ? '<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>'
+        : '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>';
     }
   }
+
+  function toggleFallbackFullscreen(force) {
+    const isFallback = typeof force === 'boolean' ? force : !document.body.classList.contains('fallback-fullscreen');
+    document.body.classList.toggle('fallback-fullscreen', isFallback);
+    updateFullscreenUI();
+  }
+
+  function toggleFullscreen() {
+    const doc = document;
+    const docEl = doc.documentElement;
+    const fsEl = getFullscreenElement();
+
+    if (!fsEl && !doc.body.classList.contains('fallback-fullscreen')) {
+      const req = docEl.requestFullscreen ||
+                  docEl.webkitRequestFullscreen ||
+                  docEl.webkitRequestFullScreen ||
+                  docEl.mozRequestFullScreen ||
+                  docEl.msRequestFullscreen;
+      if (req) {
+        try {
+          const promise = req.call(docEl);
+          if (promise && promise.catch) {
+            promise.catch(err => {
+              console.warn('Native fullscreen request rejected, using fallback:', err);
+              toggleFallbackFullscreen(true);
+            });
+          }
+        } catch (err) {
+          console.warn('Native fullscreen failed, using fallback:', err);
+          toggleFallbackFullscreen(true);
+        }
+      } else {
+        toggleFallbackFullscreen(true);
+      }
+    } else {
+      if (doc.body.classList.contains('fallback-fullscreen')) {
+        toggleFallbackFullscreen(false);
+      }
+      const exit = doc.exitFullscreen ||
+                   doc.webkitExitFullscreen ||
+                   doc.webkitCancelFullScreen ||
+                   doc.mozCancelFullScreen ||
+                   doc.msExitFullscreen;
+      if (exit && fsEl) {
+        try {
+          const promise = exit.call(doc);
+          if (promise && promise.catch) {
+            promise.catch(err => console.warn('Exit fullscreen failed:', err));
+          }
+        } catch (err) {
+          console.warn('Exit fullscreen error:', err);
+        }
+      }
+    }
+    updateFullscreenUI();
+  }
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+    document.addEventListener(evt, updateFullscreenUI);
+  });
 
   // ERD Inspector Logic
   function selectEntity(entityKey) {
@@ -2931,6 +3023,9 @@
         const modal = document.getElementById('grid-modal');
         if (drawer.classList.contains('open')) toggleNotes();
         if (modal.classList.contains('open')) toggleGrid();
+        if (document.body.classList.contains('fallback-fullscreen')) {
+          toggleFallbackFullscreen(false);
+        }
         break;
     }
   });
