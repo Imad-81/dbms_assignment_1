@@ -16,6 +16,7 @@
 7. [Live SQL Queries to Demo in Front of the Professor](#7-live-sql-queries-to-demo-in-front-of-the-professor)
 8. [Step-by-Step 5-Minute Presentation Script](#8-step-by-step-5-minute-presentation-script)
 9. [Top 15 Viva Questions & Bulletproof Answers](#9-top-15-viva-questions--bulletproof-answers)
+10. [Modern ORM Layer: Prisma Schema & Prisma Studio Demo](#10-modern-orm-layer-prisma-schema--prisma-studio-demo)
 
 ---
 
@@ -492,3 +493,34 @@ Follow this exact script when presenting:
 
 #### Q15: What are your milestones for Review 2?
 **Answer:** *"In Review 2 (Week 10), we will implement complex analytical views (Bed Occupancy Dashboard, Doctor Workload, Unpaid Invoices), PL/pgSQL stored procedures, and triggers for automated bed status switching and appointment slot concurrency locking."*
+
+---
+
+## 10. MODERN ORM LAYER: PRISMA SCHEMA & PRISMA STUDIO DEMO
+
+To demonstrate modern software engineering practices alongside pure relational theory, we integrated **Prisma ORM** (`prisma/schema.prisma`) connected directly to our live PostgreSQL database.
+
+### 🌐 How to Launch Prisma Studio in Front of the Professor
+```bash
+./run_db.sh studio
+# Prisma Studio starts on http://localhost:5555
+```
+Open **`http://localhost:5555`** in your browser.
+
+### 🎯 Live Demonstration Steps in Prisma Studio
+1. **Show all 16 Models:** Point to the left sidebar displaying all 16 3NF models.
+2. **Demonstrate Relational Traversal:** Open the `appointment` table. Click on the `doctor` or `patient` relation pill. Prisma Studio immediately opens the associated doctor or patient record without writing manual SQL.
+3. **Multi-Field Filtering:** Filter `appointment` by status = `CONFIRMED` or `COMPLETED`.
+4. **Show Nested Patient EMR:** In the `consultation` table, view how each consultation links to `diagnosis` and `prescription` line items.
+5. **Show Schema ER Diagram:** Point to [`docs/prisma_erd.svg`](prisma_erd.svg) generated directly from the Prisma schema.
+
+### 🎓 Bonus Viva Q&As on Prisma & ORMs:
+
+#### Q16: Why did you incorporate Prisma ORM on top of PostgreSQL?
+**Answer:** *"While PostgreSQL provides the robust ACID-compliant 3NF relational engine with CHECK and FOREIGN KEY constraints, Prisma ORM gives our application layer type-safety, prevents SQL injection by default, and provides Prisma Studio as a visual data inspection GUI for database administrators."*
+
+#### Q17: Does using Prisma bypass PostgreSQL's constraints or normalization?
+**Answer:** *"No, absolutely not. Prisma was configured via `prisma db pull` by introspecting our existing PostgreSQL schema. All database-level constraints (PRIMARY KEY, FOREIGN KEY, UNIQUE, and CHECK constraints) remain actively enforced by the PostgreSQL engine. Any invalid data entered through Prisma or Prisma Studio is immediately rejected by PostgreSQL."*
+
+#### Q18: What is the Object-Relational Impedance Mismatch, and how does Prisma solve it?
+**Answer:** *"The impedance mismatch refers to the conceptual difference between the relational model (tables, rows, foreign keys, set theory) and the object-oriented programming model (objects, pointers, nested graphs). Prisma solves this by automatically mapping relational joins into nested objects with full type definitions while generating optimized SQL queries."*

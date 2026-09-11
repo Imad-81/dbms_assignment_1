@@ -603,14 +603,21 @@
       <div class="brand-logo">H+</div>
       <div>
         <div class="brand-title">Hospital Appointment & Patient Care DBMS</div>
-        <div class="brand-subtitle">Review 1 Deliverables — PostgreSQL Relational Schema</div>
+        <div class="brand-subtitle">Review 1 Deliverables — PostgreSQL & Prisma ORM Schema</div>
       </div>
     </div>
-    <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('erd')">Interactive ERD</button>
-      <button class="tab-btn" onclick="switchTab('schema')">3NF Schema Explorer</button>
-      <button class="tab-btn" onclick="switchTab('rules')">Business Integrity Rules</button>
-      <button class="tab-btn" onclick="switchTab('viva')">Viva Q&A Defense</button>
+    <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('erd')">Interactive ERD</button>
+        <button class="tab-btn" onclick="switchTab('schema')">3NF Schema Explorer</button>
+        <button class="tab-btn" onclick="switchTab('prisma')">Prisma Studio & ERD</button>
+        <button class="tab-btn" onclick="switchTab('rules')">Business Integrity Rules</button>
+        <button class="tab-btn" onclick="switchTab('viva')">Viva Q&A Defense</button>
+      </div>
+      <a href="http://localhost:5555" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 0.5rem 1.1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #a7f3d0; box-shadow: 0 0 8px #34d399;"></span>
+        🚀 Launch Prisma Studio (:5555)
+      </a>
     </div>
   </header>
 
@@ -969,6 +976,102 @@
           <p style="color: var(--text-secondary); font-size: 0.95rem;">
             <strong>Answer:</strong> The <span class="code-tag">bill</span> table includes nullable foreign keys to <span class="code-tag">appointment_id</span> (for outpatient visits) and <span class="code-tag">admission_id</span> (for inpatient stays). Itemized charges (consultation, lab, bed, pharmacy) aggregate into a net total, which is then settled via the 1:N <span class="code-tag">payment</span> receipt table.
           </p>
+        </div>
+    </div>
+
+    <!-- TAB 5: PRISMA STUDIO & DIAGRAMS HUB -->
+    <div id="tab-prisma" class="tab-content">
+      <!-- Prisma Studio Command Center Card -->
+      <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.98)); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Visual Database GUI</span>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Prisma ORM v6.19+ • Port 5555</span>
+          </div>
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin-bottom: 0.35rem;">Prisma Studio & Schema Exploration Hub</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; max-width: 750px;">
+            Inspect, filter, navigate, and edit all 16 normalized relational tables and foreign-key connections visually in real time.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="http://localhost:5555" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 0.75rem 1.4rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); transition: transform 0.15s ease;">
+            <span>🌐 Open Prisma Studio</span>
+          </a>
+          <a href="prisma_erd.svg" target="_blank" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-color); color: #e2e8f0; padding: 0.75rem 1.4rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem;">
+            <span>📐 Fullscreen ERD (SVG)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Command Bar -->
+      <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <span style="font-weight: 600; font-size: 0.85rem; color: #7dd3fc; text-transform: uppercase; letter-spacing: 0.05em;">Terminal Commands:</span>
+          <code style="background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 0.4rem 0.8rem; border-radius: 6px; font-family: var(--font-mono); color: #a5f3fc; font-size: 0.85rem;">./run_db.sh studio</code>
+          <span style="color: var(--text-muted); font-size: 0.8rem;">or</span>
+          <code style="background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 0.4rem 0.8rem; border-radius: 6px; font-family: var(--font-mono); color: #a5f3fc; font-size: 0.85rem;">npm run studio</code>
+          <code style="background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 0.4rem 0.8rem; border-radius: 6px; font-family: var(--font-mono); color: #a5f3fc; font-size: 0.85rem;">node scripts/prisma_demo.js</code>
+        </div>
+        <div style="color: #94a3b8; font-size: 0.85rem;">
+          Connected to: <span style="color: #34d399; font-weight: 600;">Neon Cloud PostgreSQL 16</span>
+        </div>
+      </div>
+
+      <!-- Split Layout: Prisma ERD Diagram Preview & Features -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        <!-- Card 1: Prisma Auto-Generated ERD -->
+        <div class="table-card" style="padding: 1.5rem; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="color: #7dd3fc; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>📐</span> Prisma Generated ER Diagram
+            </h3>
+            <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-family: var(--font-mono);">docs/prisma_erd.svg</span>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+            Compiled directly from <code style="color: #f1f5f9; font-family: var(--font-mono);">prisma/schema.prisma</code> reflecting all 16 tables, 10 ENUM types, and relational foreign keys.
+          </p>
+          <div style="flex: 1; min-height: 420px; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1; position: relative;">
+            <object data="prisma_erd.svg" type="image/svg+xml" style="width: 100%; height: 100%; min-height: 420px;"></object>
+          </div>
+          <div style="margin-top: 0.75rem; text-align: right;">
+            <a href="prisma_erd.svg" target="_blank" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-weight: 500;">Open vector SVG in new window ↗</a>
+          </div>
+        </div>
+
+        <!-- Card 2: Prisma Studio Features & Relational Capabilities -->
+        <div class="table-card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="color: #7dd3fc; font-size: 1.1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>⚡</span> How to Inspect Tables in Prisma Studio
+            </h3>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6; margin-bottom: 1rem;">
+              Prisma Studio is a visual management tool running locally at <strong style="color: #ffffff;">localhost:5555</strong>. It connects directly to your live Neon cloud database:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.25rem;">
+              <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem 1rem;">
+                <div style="color: #34d399; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">1. Visual Table Browser</div>
+                <div style="color: var(--text-secondary); font-size: 0.825rem;">Navigate all 16 entities from the left sidebar: <span class="code-tag">patient</span>, <span class="code-tag">doctor</span>, <span class="code-tag">appointment</span>, <span class="code-tag">consultation</span>, <span class="code-tag">bill</span>, and more.</div>
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem 1rem;">
+                <div style="color: #38bdf8; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">2. Relational Graph Drill-Down</div>
+                <div style="color: var(--text-secondary); font-size: 0.825rem;">Click on any foreign key pill (e.g. Doctor, Patient, Ward) to instantly jump to the connected entity without writing manual JOIN queries.</div>
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem 1rem;">
+                <div style="color: #f59e0b; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">3. Real-Time Filtering & Sorting</div>
+                <div style="color: var(--text-secondary); font-size: 0.825rem;">Filter by appointment dates, admission status (<span class="code-tag">ADMITTED</span>), payment status (<span class="code-tag">PENDING</span>), or search patient phone numbers.</div>
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem 1rem;">
+                <div style="color: #a855f7; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">4. Safe Mutation Guardrails</div>
+                <div style="color: var(--text-secondary); font-size: 0.825rem;">Add or update records with automatic validation of foreign keys, ENUM values, and database constraints with two-step commit.</div>
+              </div>
+            </div>
+          </div>
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px dashed var(--border-color); border-radius: 8px; padding: 0.85rem 1rem;">
+            <div style="color: #e2e8f0; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem;">💡 Viva Tip for Professor Presentation:</div>
+            <div style="color: var(--text-secondary); font-size: 0.8rem;">
+              Explain that Prisma acts as an Object-Relational Mapping (ORM) layer that eliminates the object-relational impedance mismatch while strictly respecting the 3NF relational normalization and PostgreSQL constraints in our backend schema.
+            </div>
+          </div>
         </div>
       </div>
     </div>

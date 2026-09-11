@@ -1,0 +1,32 @@
+{
+  "name": "hapcms-dbms",
+  "version": "1.0.0",
+  "description": "Hospital Appointment and Patient Care Management System (HAPCMS) - Relational DBMS with Prisma ORM & Prisma Studio",
+  "main": "scripts/prisma_demo.js",
+  "type": "commonjs",
+  "scripts": {
+    "studio": "prisma studio --port 5555",
+    "db:pull": "prisma db pull",
+    "db:generate": "prisma generate",
+    "prisma:demo": "node scripts/prisma_demo.js",
+    "test": "node scripts/prisma_demo.js"
+  },
+  "keywords": [
+    "dbms",
+    "postgresql",
+    "prisma",
+    "prisma-studio",
+    "hospital-management",
+    "relational-database"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "prisma": "^6.4.1",
+    "prisma-erd-generator": "^2.0.4"
+  }
+}

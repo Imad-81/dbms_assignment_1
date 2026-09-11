@@ -6,6 +6,7 @@ Database Management & Presentation CLI Runner
 
 import os
 import sys
+import subprocess
 from pathlib import Path
 # pyrefly: ignore [missing-import]
 from dotenv import load_dotenv
@@ -287,6 +288,39 @@ def interactive_shell():
                 except Exception as e:
                     print(f"❌ SQL Error: {e}\n")
 
+def launch_studio():
+    """Launches Prisma Studio web GUI on port 5555"""
+    print("\n=================================================================")
+    print("🚀 LAUNCHING PRISMA STUDIO (VISUAL TABLE EXPLORER)")
+    print("=================================================================")
+    print("Prisma Studio provides a visual GUI to inspect, filter, edit, and")
+    print("navigate all 16 relational models and foreign keys.")
+    print("\n🌐 Web URL: http://localhost:5555")
+    print("Press Ctrl+C to stop the Studio server.\n")
+    try:
+        subprocess.run(["npx", "prisma", "studio", "--port", "5555"], cwd=str(BASE_DIR))
+    except KeyboardInterrupt:
+        print("\nPrisma Studio stopped.")
+
+def run_prisma_demo():
+    """Runs the type-safe Prisma ORM demonstration script"""
+    print("\n=================================================================")
+    print("🏥 RUNNING PRISMA ORM QUERY DEMONSTRATION")
+    print("=================================================================")
+    demo_script = BASE_DIR / "scripts" / "prisma_demo.js"
+    if not demo_script.exists():
+        print(f"❌ Script not found: {demo_script}")
+        return
+    subprocess.run(["node", str(demo_script)], cwd=str(BASE_DIR))
+
+def generate_erd():
+    """Compiles Prisma Schema and regenerates the ERD SVG diagram"""
+    print("\n=================================================================")
+    print("📐 REGENERATING PRISMA CLIENT & ER DIAGRAM (SVG)")
+    print("=================================================================")
+    subprocess.run(["npx", "prisma", "generate"], cwd=str(BASE_DIR))
+    print("\n✅ Prisma Client and docs/prisma_erd.svg generated successfully.")
+
 def main():
     if len(sys.argv) < 2:
         print("""
@@ -297,6 +331,9 @@ Usage:
     ./run_db.sh reports       # Run the 5 analytical report queries
     ./run_db.sh test          # Run constraint validation tests (Viva demonstration)
     ./run_db.sh shell         # Launch interactive SQL query prompt
+    ./run_db.sh studio        # Launch Prisma Studio web GUI on http://localhost:5555
+    ./run_db.sh prisma-demo   # Run Prisma ORM clinical query verification
+    ./run_db.sh erd           # Regenerate schema ER diagram from Prisma
         """)
         return
 
@@ -311,6 +348,12 @@ Usage:
         test_constraints()
     elif cmd in ("shell", "interactive"):
         interactive_shell()
+    elif cmd in ("studio", "gui", "web"):
+        launch_studio()
+    elif cmd in ("prisma-demo", "prisma", "orm"):
+        run_prisma_demo()
+    elif cmd in ("erd", "diagram", "diagrams"):
+        generate_erd()
     else:
         print(f"Unknown command: {cmd}")
 
