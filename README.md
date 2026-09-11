@@ -9,6 +9,7 @@
 
 | Goal | Action |
 | :--- | :--- |
+| 📽️ **View Schema & ERD Keynote Deck** | Open **[`schema_keynote.html`](schema_keynote.html)** (`open schema_keynote.html`) for the dedicated Apple Keynote deck on 16 table specifications, 3NF proofs, and Crow's Foot ERD. |
 | 🚀 **Launch Prisma Studio (Visual Tables)** | Run `npm run studio` or `./run_db.sh studio` to browse and edit all 16 tables on [`http://localhost:5555`](http://localhost:5555). |
 | 📊 **View Interactive ER Diagram & Hub** | Open **[`docs/erd_viewer.html`](docs/erd_viewer.html)** in any browser (`open docs/erd_viewer.html`). |
 | 📐 **View Vector Prisma Schema ERD** | Open **[`docs/prisma_erd.svg`](docs/prisma_erd.svg)** for the vector entity-relationship diagram compiled directly from Prisma. |
@@ -24,6 +25,8 @@
 
 | Component | Description | File Location |
 | :--- | :--- | :--- |
+| **Relational Schema & ERD Keynote** | Dedicated Apple Keynote-style presentation covering 16 table specifications, Crow's Foot ERD, referential actions, and 3NF proofs. | [`schema_keynote.html`](schema_keynote.html) |
+| **Executive Project Presentation** | Complete problem-approach-solution Keynote presentation with speaker scripts and slide overview grid. | [`presentation.html`](presentation.html) |
 | **Prisma Studio Web GUI** | Visual data explorer for all 16 relational tables with live filtering, sorting, and relational foreign-key navigation. | [`http://localhost:5555`](http://localhost:5555) (`./run_db.sh studio`) |
 | **Prisma ORM Schema** | Type-safe schema introspected directly from Neon PostgreSQL, modeling all 16 tables, 10 custom ENUMs, and relations. | [`prisma/schema.prisma`](prisma/schema.prisma) |
 | **Prisma Vector ERD Diagram** | Automated high-resolution SVG diagram generated directly from `schema.prisma`. | [`docs/prisma_erd.svg`](docs/prisma_erd.svg) |
