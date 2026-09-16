@@ -841,7 +841,7 @@
         <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#6ee7b7; box-shadow:0 0 6px #34d399;"></span>
         <span>Prisma Studio</span>
       </a>
-      <a href="docs/erd_viewer.html" target="_blank" class="btn-action" title="Open Interactive ERD Explorer">
+      <a href="erd_viewer.html" target="_blank" class="btn-action" title="Open Interactive ERD Explorer">
         <span>Interactive ERD</span>
       </a>
       <a href="presentation.html" class="btn-action" title="Open Executive Presentation Deck">
@@ -1031,7 +1031,7 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 14px;">
                   <span style="font-size: 11px; color: var(--text-muted);">Notation: Crow's Foot (1:1, 1:N)</span>
-                  <a href="docs/prisma_erd.svg" id="erd-svg-link" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-size: 11px; font-weight: 600;">Open Prisma SVG ↗</a>
+                  <a href="../docs/prisma_erd.svg" id="erd-svg-link" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-size: 11px; font-weight: 600;">Open Prisma SVG ↗</a>
                 </div>
               </div>
 
@@ -2404,7 +2404,7 @@ const patient = await prisma.patient.findUnique({
             </div>
             <div style="display: flex; gap: 10px;">
               <a href="presentation.html" class="btn-action" style="background: #1e293b; color: #ffffff; border-color: #334155; font-size: 12px;">Executive Deck</a>
-              <a href="docs/erd_viewer.html" class="btn-action" style="background: #1e293b; color: #ffffff; border-color: #334155; font-size: 12px;">ERD Viewer</a>
+              <a href="erd_viewer.html" class="btn-action" style="background: #1e293b; color: #ffffff; border-color: #334155; font-size: 12px;">ERD Viewer</a>
               <a href="http://localhost:5555" target="_blank" class="btn-action btn-prisma" style="font-size: 12px;">Prisma Studio</a>
             </div>
           </div>
@@ -2804,10 +2804,13 @@ const patient = await prisma.patient.findUnique({
     }
   }
 
-  // Adjust relative link if page is served from /docs/
+  // Adjust relative link if page is served from /docs/ or /html/
   if (window.location.pathname.includes('/docs/')) {
     const erdLink = document.getElementById('erd-svg-link');
     if (erdLink) erdLink.setAttribute('href', 'prisma_erd.svg');
+  } else if (window.location.pathname.includes('/html/')) {
+    const erdLink = document.getElementById('erd-svg-link');
+    if (erdLink) erdLink.setAttribute('href', '../docs/prisma_erd.svg');
   }
 
   // Initial setup

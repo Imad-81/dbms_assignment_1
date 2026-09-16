@@ -416,7 +416,7 @@ Follow this exact script when presenting:
 > *Our goal is to resolve major hospital operational challenges: schedule collisions, disconnected longitudinal medical charts, bed allocation bottlenecks, and fragmented billing. We designed a fully normalized relational schema containing **16 entities** organized into 6 operational clusters."*
 
 ### Minute 2: Show the ER Diagram in Browser
-*(Open `docs/erd_viewer.html` in your browser)*
+*(Open `html/erd_viewer.html` in your browser)*
 > *"Here is our interactive ER Diagram in Crow's Foot notation. As you can see, we have:*
 > - *Provider Roster: Department, Doctor, Schedule*
 > - *Patient & Appointments: Patient, Appointment*
