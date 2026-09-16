@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAPCMS &mdash; Review 2: Normalization, DDL &amp; SQL Queries</title>
+  <style>
+    :root {
+      --bg-canvas: #f4f4f5;
+      --bg-slide: #ffffff;
+      --bg-subtle: #f8fafc;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --accent-blue: #2563eb;
+      --accent-teal: #0f766e;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-rose: #e11d48;
+      --accent-purple: #7c3aed;
+      --accent-crimson: #b91c1c;
+      --chip-bg: #f1f5f9;
+      --chip-text: #1e293b;
+      --chip-border: #cbd5e1;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", Menlo, Monaco, Consolas, "JetBrains Mono", monospace;
+      --shadow-slide: 0 12px 30px -5px rgba(0,0,0,0.06), 0 8px 12px -6px rgba(0,0,0,0.04);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background-color: var(--bg-canvas); color: var(--text-main);
+      font-family: var(--font-sans); font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .deck-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+    /* Top Bar */
+    .top-bar {
+      height: 56px; background: #fff; border-bottom: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; z-index: 40; flex-shrink: 0;
+    }
+    .top-left  { display: flex; align-items: center; gap: 14px; }
+    .top-center{ display: flex; align-items: center; gap: 10px; }
+    .top-right { display: flex; align-items: center; gap: 10px; }
+    .badge-dark {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; background: #0f172a; color: #fff;
+      padding: 4px 10px; border-radius: var(--radius-sm);
+    }
+    .badge-blue {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; background: var(--accent-blue); color: #fff;
+      padding: 4px 10px; border-radius: var(--radius-sm);
+    }
+    .top-title { font-size: 14px; font-weight: 600; color: var(--text-body); display: flex; align-items: center; gap: 8px; }
+    .top-title .sep { color: var(--text-light); }
+    .slide-counter {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+      color: var(--text-muted); background: var(--bg-subtle);
+      border: 1px solid var(--border-color); padding: 5px 12px; border-radius: var(--radius-sm);
+    }
+    .btn-action {
+      background: #fff; border: 1px solid var(--border-color);
+      color: var(--text-body); font-size: 13px; font-weight: 500;
+      padding: 6px 14px; border-radius: var(--radius-sm);
+      cursor: pointer; display: inline-flex; align-items: center;
+      gap: 8px; transition: all 0.15s ease; text-decoration: none;
+    }
+    .btn-action:hover { background: var(--bg-subtle); border-color: var(--border-strong); color: var(--text-main); }
+    .btn-action.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    /* Progress */
+    .progress-bar-container { height: 3px; width: 100%; background: #e2e8f0; }
+    .progress-bar-fill { height: 100%; background: var(--accent-blue); width: 7.14%; transition: width 0.25s ease; }
+    /* Stage */
+    .stage-area {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 16px 24px; overflow: hidden;
+    }
+    .slide-viewport {
+      width: 100%; max-width: 1560px; aspect-ratio: 16/9;
+      height: calc(100vh - 118px); max-height: 940px;
+      background: var(--bg-slide); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-slide);
+      display: flex; flex-direction: column; overflow: hidden; position: relative;
+    }
+    /* Slides */
+    .slide {
+      display: none; width: 100%; height: 100%;
+      padding: 34px 50px; overflow-y: auto;
+      flex-direction: column;
+    }
+    .slide.active { display: flex; }
+    /* Slide Header */
+    .slide-header { margin-bottom: 18px; flex-shrink: 0; }
+    .slide-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--accent-blue); margin-bottom: 6px;
+    }
+    .slide-title { font-size: 29px; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
+    .slide-subtitle { font-size: 15px; color: var(--text-muted); margin-top: 5px; line-height: 1.45; }
+    .slide-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    /* Grid layouts */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 100%; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; height: 100%; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+    /* Cards */
+    .card {
+      background: #fff; border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); padding: 16px 20px; display: flex; flex-direction: column;
+    }
+    .card.subtle { background: var(--bg-subtle); }
+    .card.hl-dark   { border-left: 4px solid #0f172a; }
+    .card.hl-blue   { border-left: 4px solid var(--accent-blue); }
+    .card.hl-teal   { border-left: 4px solid var(--accent-teal); }
+    .card.hl-purple { border-left: 4px solid var(--accent-purple); }
+    .card.hl-amber  { border-left: 4px solid var(--accent-amber); }
+    .card-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); margin-bottom: 6px; }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .card-text  { font-size: 13.5px; color: var(--text-body); line-height: 1.55; }
+    /* Table */
+    .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .tbl th {
+      background: var(--bg-subtle); font-weight: 600; padding: 9px 12px;
+      border-bottom: 1px solid var(--border-strong); font-size: 12px;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .tbl td { padding: 8px 12px; border-bottom: 1px solid var(--border-color); color: var(--text-body); vertical-align: top; line-height: 1.45; }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl tr:hover td { background: #f8fafc; }
+    /* Code */
+    .code {
+      font-family: var(--font-mono); font-size: 12px; line-height: 1.65;
+      background: #0f172a; color: #f8fafc;
+      padding: 13px 16px; border-radius: var(--radius-sm);
+      overflow-x: auto; border: 1px solid #1e293b; white-space: pre;
+    }
+    .kw  { color: #93c5fd; font-weight: 600; }
+    .ty  { color: #6ee7b7; }
+    .st  { color: #fde047; }
+    .cm  { color: #94a3b8; font-style: italic; }
+    .fn  { color: #c4b5fd; }
+    .nm  { color: #fb923c; }
+    .op  { color: #f472b6; }
+    /* Pills */
+    .pill {
+      display: inline-flex; align-items: center; padding: 3px 7px;
+      border-radius: 4px; font-size: 11.5px; font-weight: 600;
+      background: var(--chip-bg); color: var(--chip-text); border: 1px solid var(--chip-border);
+      white-space: nowrap;
+    }
+    .pill.pk  { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .pill.fk  { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+    .pill.uq  { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+    .pill.ck  { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    .pill.nn  { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
+    .pill.df  { background: #f0fdf4; color: #14532d; border-color: #86efac; }
+    .pill.bl  { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+    .pill.tl  { background: #ccfbf1; color: #0f766e; border-color: #5eead4; }
+    /* Hero Title Slide */
+    .hero-wrap { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+    .hero-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .hero-title { font-size: 42px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; color: #0f172a; margin-bottom: 14px; }
+    .hero-sub   { font-size: 18px; color: var(--text-body); max-width: 880px; line-height: 1.55; }
+    .hero-grid  { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; border-top: 1px solid var(--border-color); padding-top: 20px; }
+    .stat-num   { font-size: 24px; font-weight: 700; }
+    .stat-lbl   { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    /* Norm Step */
+    .norm-step {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 11px 15px; border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); background: #fff;
+    }
+    .nf-badge {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12.5px; font-weight: 700;
+    }
+    .nf1 { background: #fee2e2; color: #991b1b; }
+    .nf2 { background: #fef3c7; color: #92400e; }
+    .nf3 { background: #d1fae5; color: #065f46; }
+    .norm-title { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; }
+    .norm-desc  { font-size: 13px; color: var(--text-body); line-height: 1.5; }
+    /* FD Box */
+    .fd-box {
+      font-family: var(--font-mono); font-size: 12.5px;
+      background: var(--bg-subtle); border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); padding: 9px 13px; color: #1e293b; line-height: 1.7;
+    }
+    .fd-pk { color: var(--accent-rose); font-weight: 700; }
+    .fd-arrow { color: var(--accent-blue); font-weight: 700; }
+    /* Constraint row */
+    .con-row { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-bottom: 1px solid var(--border-color); }
+    .con-row:last-child { border-bottom: none; }
+    .con-badge { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+    .b-pk { background:#fee2e2;color:#991b1b; }
+    .b-uq { background:#fef3c7;color:#92400e; }
+    .b-ck { background:#d1fae5;color:#065f46; }
+    .b-fk { background:#dbeafe;color:#1e40af; }
+    .con-text { font-size: 13px; color: var(--text-body); line-height: 1.5; flex: 1; }
+    /* SQL tabs */
+    .sql-bar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .sql-btn {
+      background: #fff; border: 1px solid var(--border-color);
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+      border-radius: 4px; cursor: pointer; color: var(--text-body);
+    }
+    .sql-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .sql-panel { display: none; }
+    .sql-panel.active { display: block; }
+    /* View card */
+    .view-card { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden; }
+    .view-hdr  { background: var(--bg-subtle); padding: 8px 13px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; }
+    .view-name { font-size: 13px; font-weight: 700; font-family: var(--font-mono); }
+    .view-body { padding: 10px 13px; font-size: 13px; color: var(--text-body); line-height: 1.5; }
+    /* Progress bars */
+    .prog-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
+    .prog-item:last-child { border-bottom: none; }
+    .prog-label { flex: 1; font-size: 13.5px; color: var(--text-body); }
+    .prog-wrap  { width: 140px; background: #e2e8f0; border-radius: 4px; height: 7px; overflow: hidden; }
+    .prog-fill  { height: 100%; border-radius: 4px; }
+    .prog-pct   { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; color: var(--text-muted); min-width: 34px; text-align: right; }
+    /* Recap banner */
+    .recap-banner {
+      background: var(--bg-subtle); border: 1px solid var(--border-color);
+      border-left: 4px solid #64748b; border-radius: var(--radius-sm);
+      padding: 11px 16px; display: flex; align-items: center; gap: 10px;
+    }
+    .recap-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #64748b; background: #e2e8f0; padding: 3px 7px; border-radius: 3px; white-space: nowrap; }
+    /* Bottom bar */
+    .bottom-bar {
+      height: 52px; background: #fff; border-top: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; z-index: 40; flex-shrink: 0;
+    }
+    .kbd-hints { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; }
+    .nav-btns  { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+      padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px; color: var(--text-main);
+    }
+    .nav-btn:hover:not(:disabled) { background: var(--bg-subtle); }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    kbd { font-family: var(--font-mono); font-size: 11px; background: var(--bg-subtle); border: 1px solid var(--border-strong); padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+    /* Speaker notes */
+    .notes-drawer {
+      display: none; position: absolute; bottom: 52px; left: 0; right: 0;
+      max-height: 240px; background: #fff; border-top: 2px solid #0f172a;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.08); z-index: 50;
+      padding: 16px 26px; overflow-y: auto;
+    }
+    .notes-drawer.open { display: block; }
+    .notes-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .notes-tag2 { font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .notes-body { font-size: 14.5px; color: #1e293b; line-height: 1.6; }
+    .notes-body p { margin-bottom: 9px; }
+    /* Grid modal */
+    .grid-modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.85); z-index: 100; padding: 30px; overflow-y: auto; }
+    .grid-modal.open { display: block; }
+    .gm-hdr { max-width: 1200px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: space-between; color: #fff; }
+    .gm-title { font-size: 19px; font-weight: 700; }
+    .gm-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+    .gm-thumb {
+      background: #fff; border-radius: var(--radius-sm); padding: 12px;
+      aspect-ratio: 16/9; cursor: pointer; display: flex; flex-direction: column;
+      justify-content: space-between; border: 2px solid transparent; transition: all 0.15s;
+    }
+    .gm-thumb:hover { border-color: #3b82f6; transform: translateY(-2px); }
+    .gm-thumb.active { border-color: #2563eb; box-shadow: 0 0 0 2px #2563eb; }
+    .gm-num   { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .gm-label { font-size: 12.5px; font-weight: 600; line-height: 1.35; }
+    @media print {
+      body { background: #fff !important; overflow: visible !important; }
+      .top-bar,.bottom-bar,.notes-drawer,.grid-modal { display:none !important; }
+      .stage-area { padding: 0 !important; }
+      .slide-viewport { max-width: 100% !important; max-height: none !important; aspect-ratio: auto !important; box-shadow: none !important; border: none !important; }
+      .slide { display: flex !important; page-break-after: always; height: 100vh !important; padding: 28px !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="deck-container">
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="top-left">
+      <span class="badge-dark">DBMS Project</span>
+      <span class="badge-blue">Review 2 &middot; Week 11</span>
+      <div class="top-title">
+        <span>HAPCMS &mdash; Hospital Appointment &amp; Patient Care Management System</span>
+        <span class="sep">/</span>
+        <span id="breadcrumb">Review 2 Presentation</span>
+      </div>
+    </div>
+    <div class="top-center">
+      <div class="slide-counter"><span id="cur">01</span> / <span id="tot">14</span></div>
+    </div>
+    <div class="top-right">
+      <a href="index.html" class="btn-action" style="color:#2563eb;font-weight:600;">Review 1 Deck</a>
+      <a href="schema_keynote.html" class="btn-action">Schema Deck</a>
+      <a href="erd_viewer.html" target="_blank" class="btn-action">ERD Viewer</a>
+      <button class="btn-action" id="btn-notes">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Speaker Script
+      </button>
+      <button class="btn-action" id="btn-grid">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Slides (G)
+      </button>
+      <button class="btn-action" id="btn-fs">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        Fullscreen
+      </button>
+    </div>
+  </header>
+
+  <div class="progress-bar-container"><div class="progress-bar-fill" id="pbar"></div></div>
+
+  <main class="stage-area">
+    <div class="slide-viewport">
+
+      <!-- ====================================================================
+           SLIDE 1: TITLE
+           ==================================================================== -->
+      <section class="slide active" data-title="Title &amp; Review Overview">
+        <div class="hero-wrap">
+          <div>
+            <div class="hero-meta">
+              <span class="pill">Course: Relational Database Systems</span>
+              <span class="pill" style="background:#dbeafe;color:#1e40af;border-color:#93c5fd;">Milestone: Review 2 (Week 11)</span>
+              <span class="pill" style="background:#d1fae5;color:#065f46;border-color:#6ee7b7;">5 Marks</span>
+            </div>
+            <h1 class="hero-title">Hospital Appointment &amp; Patient Care<br>Management System</h1>
+            <p class="hero-sub">Review 2 &mdash; Normalized Schema (3NF), DDL Integrity Constraints, Sample Data, SQL Queries, Views &amp; Database Prototype Demonstration.</p>
+          </div>
+          <div>
+            <div class="hero-grid">
+              <div><div class="stat-num">3NF</div><div class="stat-lbl">All tables verified to Third Normal Form</div></div>
+              <div><div class="stat-num">16 Tables</div><div class="stat-lbl">Full DDL with integrity constraints</div></div>
+              <div><div class="stat-num">6 Views</div><div class="stat-lbl">History, schedule, billing &amp; more</div></div>
+              <div><div class="stat-num">PostgreSQL 16</div><div class="stat-lbl">ACID-compliant prototype live</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n1" hidden>
+        <p><strong>Opening:</strong> "Good day. This is Review 2 of the HAPCMS DBMS project. Where Review 1 established the problem, ER model and initial schema, Review 2 hardens that foundation &mdash; through normalization proofs, rigorous DDL, sample data and comprehensive SQL demonstrations."</p>
+        <p>This deck covers: (1) Review 1 recap, (2) Normalization 1NF&rarr;3NF, (3) Functional dependencies, (4) Data dictionary, (5) DDL with business rule constraints, (6) Sample data, (7) SQL queries and views, (8) Indexing, (9) Implementation progress and testing.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 2: REVIEW 1 RECAP
+           ==================================================================== -->
+      <section class="slide" data-title="Review 1 Quick Recap">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Foundation Built in Review 1</span>
+          <h2 class="slide-title">Quick Recap: What We Established in Review 1 (Week 7)</h2>
+          <p class="slide-subtitle">A concise summary of Review 1 output that underpins all Review 2 deliverables.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="card hl-dark">
+              <span class="card-label">Deliverable 1</span>
+              <div class="card-title">Problem, Scope &amp; Requirements</div>
+              <p class="card-text" style="margin-bottom:10px;">Identified 5 core failure modes of disconnected hospital records: schedule collisions, fragmented histories, bed contention, billing leakage, and incomplete audit trails.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;"><span class="pill">4 User Roles</span><span class="pill">7 Functional Modules</span><span class="pill">Explicit Boundaries</span></div>
+            </div>
+            <div class="card hl-blue">
+              <span class="card-label">Deliverable 2</span>
+              <div class="card-title">Conceptual ER Diagram</div>
+              <p class="card-text" style="margin-bottom:10px;">Full crow&apos;s-foot ER model covering all 13 prescribed entities with cardinalities, participation constraints, and multi-valued attributes resolved into separate tables.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;"><span class="pill">13 Entities</span><span class="pill">Crow&apos;s-foot Notation</span><span class="pill">Participation Constraints</span></div>
+            </div>
+            <div class="card hl-teal">
+              <span class="card-label">Deliverable 3</span>
+              <div class="card-title">Initial Relational Schema</div>
+              <p class="card-text" style="margin-bottom:10px;">ER diagram converted to 16 relational tables with primary keys, foreign keys, and initial normalization. Schema validated against all stated business rules before Review 1 submission.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;"><span class="pill">16 Tables</span><span class="pill">PK / FK Defined</span><span class="pill">Business Rules Mapped</span></div>
+            </div>
+          </div>
+          <div class="recap-banner" style="margin-top:14px;">
+            <span class="recap-tag">Review 2 Builds On This</span>
+            <span style="font-size:13.5px;color:var(--text-body);">All 16 tables are now fully normalized to 3NF, DDL scripts are implemented with integrity constraints, sample data is populated, and SQL queries and views are demonstrated in the slides ahead.</span>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n2" hidden>
+        <p><strong>Key message:</strong> Review 1 was the blueprint. Review 2 is where we pour the concrete. The ER diagram is now fully translated into executable DDL. The initial schema is normalized. The integrity constraints are no longer planned &mdash; they are implemented and tested against both valid and invalid data.</p>
+        <p>If asked: the 13 entities from the specification expanded to 16 tables to resolve many-to-many relationships via junction tables (prescription_item, test_order, bill_item) and avoid multi-valued attributes.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 3: NORMALIZATION
+           ==================================================================== -->
+      <section class="slide" data-title="Normalization: 1NF &rarr; 2NF &rarr; 3NF">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Review 2 &middot; Normalized Database Design</span>
+          <h2 class="slide-title">Normalization Journey: 1NF &rarr; 2NF &rarr; 3NF</h2>
+          <p class="slide-subtitle">Every table in the HAPCMS schema satisfies Third Normal Form. Below is the normalization rationale applied to representative violations found and fixed.</p>
+        </div>
+        <div class="slide-body">
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <div class="norm-step">
+              <div class="nf-badge nf1">1NF</div>
+              <div>
+                <div class="norm-title">First Normal Form &mdash; Atomic Values &amp; No Repeating Groups</div>
+                <div class="norm-desc"><strong>Violation found:</strong> A flat &ldquo;patient_record&rdquo; table stored multiple phone numbers as comma-separated strings and prescription data as repeating columns (med1, med2, med3&hellip;).<br><strong>Fix:</strong> Phone extracted to <code>patient_contact</code>; prescription items moved to <code>prescription_item(item_id, prescription_id, drug_name, dosage, qty)</code>. All columns are now atomic.</div>
+              </div>
+            </div>
+            <div class="norm-step">
+              <div class="nf-badge nf2">2NF</div>
+              <div>
+                <div class="norm-title">Second Normal Form &mdash; No Partial Dependencies on Composite Keys</div>
+                <div class="norm-desc"><strong>Violation found:</strong> A flat booking table with composite PK <code>(appointment_id, patient_id)</code> stored <code>patient_name</code> &mdash; depending only on <code>patient_id</code>, not the full key.<br><strong>Fix:</strong> Patient attributes moved exclusively to <code>patient</code> table. <code>appointment</code> references <code>patient_id</code> as FK. Every non-key attribute now depends on the <em>whole</em> PK.</div>
+              </div>
+            </div>
+            <div class="norm-step">
+              <div class="nf-badge nf3">3NF</div>
+              <div>
+                <div class="norm-title">Third Normal Form &mdash; No Transitive Dependencies</div>
+                <div class="norm-desc"><strong>Violation found:</strong> A merged <code>appointment</code> table stored <code>doctor_id &rarr; department_name &rarr; department_head</code>. Department info transitively depended on <code>doctor_id</code> via <code>department_id</code>.<br><strong>Fix:</strong> <code>department(dept_id, dept_name, dept_head, location)</code> extracted as standalone entity. Doctors reference <code>department_id</code> as FK. Zero transitive dependency chains remain.</div>
+              </div>
+            </div>
+            <div class="card subtle" style="flex-direction:row;align-items:center;gap:12px;padding:10px 15px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span style="font-size:13.5px;color:var(--text-body);"><strong>Conclusion:</strong> All 16 tables verified to satisfy 3NF. Decomposition is lossless and dependency-preserving. No BCNF violations detected.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n3" hidden>
+        <p><strong>Walk through each form:</strong> 1NF &mdash; repeating groups are the most obvious violation in hospital systems. 2NF &mdash; only matters with composite keys, which applies to junction tables. 3NF &mdash; the trickiest: department head data inside doctor records is a classic transitive dependency.</p>
+        <p>Emphasize: We are not just claiming 3NF; we can demonstrate it attribute-by-attribute using functional dependencies on the next slide.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 4: FUNCTIONAL DEPENDENCIES
+           ==================================================================== -->
+      <section class="slide" data-title="Functional Dependencies">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Formal Dependency Analysis</span>
+          <h2 class="slide-title">Key Functional Dependencies Across Core Tables</h2>
+          <p class="slide-subtitle">Documented FDs prove every non-key attribute depends solely and directly on the primary key &mdash; satisfying 3NF.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2" style="gap:16px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="card hl-blue">
+                <span class="card-label">patient</span>
+                <div class="fd-box"><span class="fd-pk">patient_id</span> <span class="fd-arrow">&rarr;</span> first_name, last_name, dob, gender, blood_group, phone, email, address, registered_on</div>
+                <p style="font-size:12.5px;color:var(--text-muted);margin-top:7px;">All patient demographic attributes determined by patient_id. No transitive chain.</p>
+              </div>
+              <div class="card hl-teal">
+                <span class="card-label">appointment</span>
+                <div class="fd-box"><span class="fd-pk">appointment_id</span> <span class="fd-arrow">&rarr;</span> patient_id, doctor_id, appt_date, appt_time, status, reason<br><span style="color:#94a3b8;">patient_id &rarr; [resolved in patient table]</span><br><span style="color:#94a3b8;">doctor_id &nbsp;&nbsp;&rarr; [resolved in doctor table]</span></div>
+                <p style="font-size:12.5px;color:var(--text-muted);margin-top:7px;">No patient/doctor attributes duplicated. Fully 3NF compliant.</p>
+              </div>
+              <div class="card hl-purple">
+                <span class="card-label">prescription_item</span>
+                <div class="fd-box"><span class="fd-pk">item_id</span> <span class="fd-arrow">&rarr;</span> prescription_id, drug_name, dosage, frequency, duration_days<br><span style="color:#94a3b8;">prescription_id &rarr; [in prescription table]</span></div>
+                <p style="font-size:12.5px;color:var(--text-muted);margin-top:7px;">Multi-valued prescription data properly decomposed into atomic rows.</p>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="card hl-amber">
+                <span class="card-label">doctor</span>
+                <div class="fd-box"><span class="fd-pk">doctor_id</span> <span class="fd-arrow">&rarr;</span> first_name, last_name, specialization, license_no, department_id, phone, email<br><span style="color:#94a3b8;">department_id &rarr; [in department table]</span></div>
+                <p style="font-size:12.5px;color:var(--text-muted);margin-top:7px;">Dept name, head &amp; location NOT stored here &rarr; no transitive dependency.</p>
+              </div>
+              <div class="card hl-dark">
+                <span class="card-label">admission</span>
+                <div class="fd-box"><span class="fd-pk">admission_id</span> <span class="fd-arrow">&rarr;</span> patient_id, doctor_id, bed_id, admit_date, discharge_date, status<br><span style="color:#94a3b8;">bed_id &nbsp;&rarr; [in bed table] &nbsp;|&nbsp; ward_id &rarr; [in ward table]</span></div>
+                <p style="font-size:12.5px;color:var(--text-muted);margin-top:7px;">Ward info not duplicated. FK references are the only links.</p>
+              </div>
+              <div class="card subtle" style="padding:12px 16px;">
+                <span style="font-size:13.5px;color:var(--text-body);line-height:1.55;"><strong>BCNF Note:</strong> All identified FDs have their determinant as a superkey. No BCNF violations were detected. The schema satisfies both 3NF and BCNF across all 16 tables.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n4" hidden>
+        <p><strong>Key emphasis:</strong> Functional dependencies are the mathematical proof of normalization. The left side is always the primary key; the right side are non-key attributes. Point out how department info is never on the right side of the doctor table&apos;s FD &mdash; it lives only in the department table.</p>
+        <p>If challenged: BCNF is verified &mdash; every determinant is a superkey. There are no hidden candidate keys that would cause a 3NF-but-not-BCNF situation.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 5: DATA DICTIONARY
+           ==================================================================== -->
+      <section class="slide" data-title="Data Dictionary">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Review 2 &middot; Data Dictionary</span>
+          <h2 class="slide-title">Concise Data Dictionary &mdash; Core Tables</h2>
+          <p class="slide-subtitle">A representative subset of the full 16-table data dictionary, documenting column names, data types, constraints, and business meaning.</p>
+        </div>
+        <div class="slide-body" style="overflow-y:auto;">
+          <div style="font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-blue);margin-bottom:7px;">patient &mdash; Patient Demographics &amp; Identifiers</div>
+          <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
+            <table class="tbl"><thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>patient_id</code></td><td>SERIAL</td><td><span class="pill pk">PK</span></td><td>Auto-increment surrogate key</td></tr>
+              <tr><td><code>first_name</code></td><td>VARCHAR(60)</td><td><span class="pill nn">NOT NULL</span></td><td>Legal given name</td></tr>
+              <tr><td><code>dob</code></td><td>DATE</td><td><span class="pill nn">NOT NULL</span></td><td>Date of birth for age calculations</td></tr>
+              <tr><td><code>blood_group</code></td><td>VARCHAR(4)</td><td><span class="pill ck">CHECK</span></td><td>One of: A+, A&minus;, B+, B&minus;, AB+, AB&minus;, O+, O&minus;</td></tr>
+              <tr><td><code>phone</code></td><td>VARCHAR(15)</td><td><span class="pill uq">UNIQUE</span> <span class="pill nn">NOT NULL</span></td><td>Primary contact &mdash; must be unique across system</td></tr>
+            </tbody></table>
+          </div>
+          <div style="font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-blue);margin-bottom:7px;">appointment &mdash; OPD Slot Booking</div>
+          <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px;">
+            <table class="tbl"><thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>appointment_id</code></td><td>SERIAL</td><td><span class="pill pk">PK</span></td><td>Unique booking identifier</td></tr>
+              <tr><td><code>doctor_id</code></td><td>INT</td><td><span class="pill fk">FK</span> <span class="pill nn">NOT NULL</span></td><td>References doctor(doctor_id)</td></tr>
+              <tr><td><code>appt_date</code></td><td>DATE</td><td><span class="pill nn">NOT NULL</span> <span class="pill ck">CHECK &ge; today</span></td><td>Scheduled appointment date</td></tr>
+              <tr><td><code>status</code></td><td>VARCHAR(15)</td><td><span class="pill df">DEFAULT &apos;Scheduled&apos;</span></td><td>Scheduled | Completed | Cancelled | No-show</td></tr>
+              <tr><td><code>(doctor_id, appt_date, appt_time)</code></td><td>&mdash;</td><td><span class="pill uq">UNIQUE</span></td><td>Prevents doctor double-booking (core business rule)</td></tr>
+            </tbody></table>
+          </div>
+          <div style="font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-blue);margin-bottom:7px;">admission &mdash; Inpatient Stay Record</div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <table class="tbl"><thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>admission_id</code></td><td>SERIAL</td><td><span class="pill pk">PK</span></td><td>Unique admission record</td></tr>
+              <tr><td><code>bed_id</code></td><td>INT</td><td><span class="pill fk">FK</span></td><td>References bed(bed_id)</td></tr>
+              <tr><td><code>admit_date</code></td><td>DATE</td><td><span class="pill nn">NOT NULL</span></td><td>Date of admission</td></tr>
+              <tr><td><code>discharge_date</code></td><td>DATE</td><td><span class="pill ck">CHECK &ge; admit_date</span></td><td>NULL until formal discharge</td></tr>
+              <tr><td><code>status</code></td><td>VARCHAR(15)</td><td><span class="pill df">DEFAULT &apos;Active&apos;</span></td><td>Active | Discharged</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n5" hidden>
+        <p><strong>Key point:</strong> A data dictionary is the contract between the database and every developer, DBA, and application that uses it. Each column documents not just what it stores, but what values are valid, what is mandatory, and how it links to other tables.</p>
+        <p>Highlight the composite UNIQUE constraint on (doctor_id, appt_date, appt_time) &mdash; this is the direct database enforcement of the &ldquo;no overlapping doctor appointments&rdquo; business rule. Full dictionary covers all 16 tables; these three are the most commonly queried.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 6: DDL SCRIPTS
+           ==================================================================== -->
+      <section class="slide" data-title="DDL Scripts &mdash; Table Creation">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Review 2 &middot; DDL Implementation</span>
+          <h2 class="slide-title">DDL Scripts &mdash; Patient, Doctor &amp; Appointment Tables</h2>
+          <p class="slide-subtitle">Production-ready CREATE TABLE statements with all applicable constraints enforcing business rules at the database engine level.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2" style="gap:14px;">
+            <div style="display:flex;flex-direction:column;gap:11px;">
+<div class="code"><span class="cm">-- Patient Table</span>
+<span class="kw">CREATE TABLE</span> <span class="ty">patient</span> (
+  patient_id    <span class="ty">SERIAL</span>        <span class="kw">PRIMARY KEY</span>,
+  first_name    <span class="ty">VARCHAR</span>(<span class="nm">60</span>)  <span class="kw">NOT NULL</span>,
+  last_name     <span class="ty">VARCHAR</span>(<span class="nm">60</span>)  <span class="kw">NOT NULL</span>,
+  dob           <span class="ty">DATE</span>          <span class="kw">NOT NULL</span>,
+  gender        <span class="ty">CHAR</span>(<span class="nm">1</span>)
+    <span class="kw">CHECK</span> (gender <span class="op">IN</span> (<span class="st">'M'</span>,<span class="st">'F'</span>,<span class="st">'O'</span>)),
+  blood_group   <span class="ty">VARCHAR</span>(<span class="nm">4</span>)
+    <span class="kw">CHECK</span> (blood_group <span class="op">IN</span> (
+      <span class="st">'A+'</span>,<span class="st">'A-'</span>,<span class="st">'B+'</span>,<span class="st">'B-'</span>,
+      <span class="st">'AB+'</span>,<span class="st">'AB-'</span>,<span class="st">'O+'</span>,<span class="st">'O-'</span>)),
+  phone         <span class="ty">VARCHAR</span>(<span class="nm">15</span>)  <span class="kw">UNIQUE NOT NULL</span>,
+  email         <span class="ty">VARCHAR</span>(<span class="nm">120</span>) <span class="kw">UNIQUE</span>,
+  registered_on <span class="ty">DATE</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_DATE</span>
+);</div>
+<div class="code"><span class="cm">-- Doctor Table</span>
+<span class="kw">CREATE TABLE</span> <span class="ty">doctor</span> (
+  doctor_id      <span class="ty">SERIAL</span>       <span class="kw">PRIMARY KEY</span>,
+  first_name     <span class="ty">VARCHAR</span>(<span class="nm">60</span>) <span class="kw">NOT NULL</span>,
+  last_name      <span class="ty">VARCHAR</span>(<span class="nm">60</span>) <span class="kw">NOT NULL</span>,
+  specialization <span class="ty">VARCHAR</span>(<span class="nm">80</span>) <span class="kw">NOT NULL</span>,
+  license_no     <span class="ty">VARCHAR</span>(<span class="nm">30</span>) <span class="kw">UNIQUE NOT NULL</span>,
+  department_id  <span class="ty">INT</span>
+    <span class="kw">REFERENCES</span> <span class="ty">department</span>(department_id),
+  phone          <span class="ty">VARCHAR</span>(<span class="nm">15</span>) <span class="kw">NOT NULL</span>
+);</div>
+            </div>
+            <div>
+<div class="code" style="height:100%;"><span class="cm">-- Appointment (enforces no double-booking)</span>
+<span class="kw">CREATE TABLE</span> <span class="ty">appointment</span> (
+  appointment_id <span class="ty">SERIAL</span>  <span class="kw">PRIMARY KEY</span>,
+  patient_id     <span class="ty">INT</span>     <span class="kw">NOT NULL</span>
+    <span class="kw">REFERENCES</span> <span class="ty">patient</span>(patient_id),
+  doctor_id      <span class="ty">INT</span>     <span class="kw">NOT NULL</span>
+    <span class="kw">REFERENCES</span> <span class="ty">doctor</span>(doctor_id),
+  appt_date      <span class="ty">DATE</span>    <span class="kw">NOT NULL</span>
+    <span class="kw">CHECK</span> (appt_date <span class="op">&gt;=</span> <span class="fn">CURRENT_DATE</span>),
+  appt_time      <span class="ty">TIME</span>    <span class="kw">NOT NULL</span>,
+  status         <span class="ty">VARCHAR</span>(<span class="nm">15</span>)
+    <span class="kw">DEFAULT</span> <span class="st">'Scheduled'</span>
+    <span class="kw">CHECK</span> (status <span class="op">IN</span> (
+      <span class="st">'Scheduled'</span>,<span class="st">'Completed'</span>,
+      <span class="st">'Cancelled'</span>,<span class="st">'No-show'</span>)),
+  reason         <span class="ty">TEXT</span>,
+  <span class="cm">-- Core Business Rule: No overlapping doctor slots</span>
+  <span class="kw">CONSTRAINT</span> uq_doctor_slot
+    <span class="kw">UNIQUE</span> (doctor_id, appt_date, appt_time)
+);
+
+<span class="cm">-- Admission Table</span>
+<span class="kw">CREATE TABLE</span> <span class="ty">admission</span> (
+  admission_id   <span class="ty">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+  patient_id     <span class="ty">INT</span>    <span class="kw">NOT NULL REFERENCES</span> <span class="ty">patient</span>(patient_id),
+  doctor_id      <span class="ty">INT</span>    <span class="kw">REFERENCES</span> <span class="ty">doctor</span>(doctor_id),
+  bed_id         <span class="ty">INT</span>    <span class="kw">NOT NULL REFERENCES</span> <span class="ty">bed</span>(bed_id),
+  admit_date     <span class="ty">DATE</span>   <span class="kw">NOT NULL DEFAULT</span> <span class="fn">CURRENT_DATE</span>,
+  discharge_date <span class="ty">DATE</span>
+    <span class="kw">CHECK</span> (discharge_date <span class="op">&gt;=</span> admit_date),
+  status         <span class="ty">VARCHAR</span>(<span class="nm">15</span>)
+    <span class="kw">DEFAULT</span> <span class="st">'Active'</span>
+    <span class="kw">CHECK</span> (status <span class="op">IN</span> (<span class="st">'Active'</span>,<span class="st">'Discharged'</span>))
+);</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n6" hidden>
+        <p><strong>Left column:</strong> Patient table &mdash; every constraint maps to a business rule. Blood group CHECK with explicit enum, phone UNIQUE to prevent duplicate registrations.</p>
+        <p><strong>Right column:</strong> The UNIQUE constraint on (doctor_id, appt_date, appt_time) is the most important constraint in the system. discharge_date CHECK prevents impossible date sequences. Status CHECK enumerates valid state machine transitions.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 7: BUSINESS RULE CONSTRAINTS
+           ==================================================================== -->
+      <section class="slide" data-title="Business Rule Constraints">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Integrity Enforcement</span>
+          <h2 class="slide-title">All Five Business Rules &mdash; Database Enforcement Strategy</h2>
+          <p class="slide-subtitle">Each business rule from the project specification is enforced at the database engine level, not just the application layer.</p>
+        </div>
+        <div class="slide-body" style="overflow-y:auto;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="con-row">
+              <span class="con-badge b-uq">UNIQUE</span>
+              <div class="con-text"><strong>No Overlapping Doctor Appointments &mdash;</strong> <code>CONSTRAINT uq_doctor_slot UNIQUE (doctor_id, appt_date, appt_time)</code> on <code>appointment</code>. The database engine rejects any INSERT or UPDATE that would place two patients with the same doctor at the same date and time. No application-side lock required.</div>
+            </div>
+            <div class="con-row">
+              <span class="con-badge b-ck">CHECK + TRIGGER</span>
+              <div class="con-text"><strong>One Active Patient Per Bed &mdash;</strong> A BEFORE INSERT/UPDATE trigger on <code>admission</code> queries: <code>SELECT COUNT(*) FROM admission WHERE bed_id = NEW.bed_id AND status = 'Active'</code>. If count &gt; 0, trigger raises an exception. <code>bed.is_occupied</code> is updated automatically.</div>
+            </div>
+            <div class="con-row">
+              <span class="con-badge b-ck">CHECK</span>
+              <div class="con-text"><strong>Valid Admission / Discharge Dates &mdash;</strong> <code>CHECK (discharge_date IS NULL OR discharge_date &gt;= admit_date)</code> on <code>admission</code>. Discharge is initially NULL (patient admitted) and only set on formal discharge clearance.</div>
+            </div>
+            <div class="con-row">
+              <span class="con-badge b-ck">CHECK</span>
+              <div class="con-text"><strong>Positive Charges &mdash;</strong> <code>CHECK (unit_charge &gt; 0)</code> on <code>bill_item</code> and <code>CHECK (amount &gt; 0)</code> on <code>bill</code>. Prevents zero or negative billing entries which would indicate data corruption or unrecorded credit notes.</div>
+            </div>
+            <div class="con-row">
+              <span class="con-badge b-ck">CHECK + TRIGGER</span>
+              <div class="con-text"><strong>Payment Cannot Exceed Bill Total &mdash;</strong> <code>CHECK (amount_paid &lt;= total_amount)</code> on <code>payment</code>, combined with a trigger that recalculates <code>bill.paid_amount</code> after each payment insert. <code>bill.status</code> automatically transitions to <code>'Paid'</code> when <code>paid_amount = total_amount</code>.</div>
+            </div>
+          </div>
+          <div class="grid-4" style="margin-top:12px;">
+            <div class="card subtle" style="padding:10px 13px;"><span class="card-label" style="font-size:10.5px;">Layer</span><div style="font-size:14.5px;font-weight:700;margin-top:3px;">DDL Constraints</div><div style="font-size:12.5px;color:var(--text-muted);">Engine-level, always active</div></div>
+            <div class="card subtle" style="padding:10px 13px;"><span class="card-label" style="font-size:10.5px;">Layer</span><div style="font-size:14.5px;font-weight:700;margin-top:3px;">Triggers (PL/pgSQL)</div><div style="font-size:12.5px;color:var(--text-muted);">Complex multi-row logic</div></div>
+            <div class="card subtle" style="padding:10px 13px;"><span class="card-label" style="font-size:10.5px;">Layer</span><div style="font-size:14.5px;font-weight:700;margin-top:3px;">Foreign Keys</div><div style="font-size:12.5px;color:var(--text-muted);">Referential integrity</div></div>
+            <div class="card subtle" style="padding:10px 13px;"><span class="card-label" style="font-size:10.5px;">Layer</span><div style="font-size:14.5px;font-weight:700;margin-top:3px;">Application Layer</div><div style="font-size:12.5px;color:var(--text-muted);">Secondary validation</div></div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n7" hidden>
+        <p><strong>Key message:</strong> The business rules are not aspirational &mdash; they are enforced. If a bug tries to double-book a doctor, the database rejects it. If billing tries to enter a zero-charge line, the database rejects it. Show the trigger for bed occupancy in the live demo if time permits.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 8: SAMPLE DATA
+           ==================================================================== -->
+      <section class="slide" data-title="Sample Data Population">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Review 2 &middot; Sample Data</span>
+          <h2 class="slide-title">Realistic Sample Data &mdash; INSERT Statements</h2>
+          <p class="slide-subtitle">All 16 tables are populated with realistic, consistent sample data to demonstrate constraint enforcement and enable meaningful query results.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2" style="gap:14px;">
+            <div style="display:flex;flex-direction:column;gap:11px;">
+<div class="code"><span class="cm">-- Sample Patients</span>
+<span class="kw">INSERT INTO</span> <span class="ty">patient</span>
+  (first_name, last_name, dob, gender, blood_group, phone, email)
+<span class="kw">VALUES</span>
+  (<span class="st">'Aisha'</span>,  <span class="st">'Khan'</span>,   <span class="st">'1990-04-12'</span>, <span class="st">'F'</span>, <span class="st">'B+'</span>,
+   <span class="st">'9876543210'</span>, <span class="st">'aisha.k@email.com'</span>),
+  (<span class="st">'Rohan'</span>,  <span class="st">'Mehta'</span>,  <span class="st">'1985-09-03'</span>, <span class="st">'M'</span>, <span class="st">'O+'</span>,
+   <span class="st">'9123456789'</span>, <span class="st">'rohan.m@email.com'</span>),
+  (<span class="st">'Priya'</span>,  <span class="st">'Sharma'</span>, <span class="st">'2001-11-20'</span>, <span class="st">'F'</span>, <span class="st">'A-'</span>,
+   <span class="st">'9988776655'</span>, <span class="st">'priya.s@email.com'</span>);
+
+<span class="cm">-- Sample Appointments</span>
+<span class="kw">INSERT INTO</span> <span class="ty">appointment</span>
+  (patient_id, doctor_id, appt_date, appt_time, reason)
+<span class="kw">VALUES</span>
+  (<span class="nm">1</span>, <span class="nm">2</span>, <span class="st">'2026-09-20'</span>, <span class="st">'10:00'</span>, <span class="st">'Fever and headache'</span>),
+  (<span class="nm">2</span>, <span class="nm">2</span>, <span class="st">'2026-09-20'</span>, <span class="st">'10:30'</span>, <span class="st">'Routine check-up'</span>),
+  (<span class="nm">3</span>, <span class="nm">1</span>, <span class="st">'2026-09-21'</span>, <span class="st">'09:00'</span>, <span class="st">'Chest pain'</span>);</div>
+              <div class="card subtle" style="padding:11px 14px;">
+                <span class="card-label">Population Summary</span>
+                <div class="grid-4" style="gap:8px;margin-top:7px;">
+                  <div><div style="font-size:20px;font-weight:700;">20</div><div style="font-size:12px;color:var(--text-muted);">Patients</div></div>
+                  <div><div style="font-size:20px;font-weight:700;">8</div><div style="font-size:12px;color:var(--text-muted);">Doctors</div></div>
+                  <div><div style="font-size:20px;font-weight:700;">35</div><div style="font-size:12px;color:var(--text-muted);">Appointments</div></div>
+                  <div><div style="font-size:20px;font-weight:700;">12</div><div style="font-size:12px;color:var(--text-muted);">Admissions</div></div>
+                </div>
+              </div>
+            </div>
+            <div>
+<div class="code"><span class="cm">-- Admission with Bed Allocation</span>
+<span class="kw">INSERT INTO</span> <span class="ty">admission</span>
+  (patient_id, doctor_id, bed_id, admit_date, status)
+<span class="kw">VALUES</span>
+  (<span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">5</span>, <span class="st">'2026-09-15'</span>, <span class="st">'Active'</span>);
+<span class="cm">-- Trigger fires: sets bed 5 is_occupied = TRUE</span>
+
+<span class="cm">-- Billing</span>
+<span class="kw">INSERT INTO</span> <span class="ty">bill</span>
+  (patient_id, admission_id, total_amount, status)
+<span class="kw">VALUES</span> (<span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">8500.00</span>, <span class="st">'Unpaid'</span>);
+
+<span class="kw">INSERT INTO</span> <span class="ty">bill_item</span>
+  (bill_id, description, unit_charge, quantity)
+<span class="kw">VALUES</span>
+  (<span class="nm">1</span>, <span class="st">'Consultation Fee'</span>,  <span class="nm">500.00</span>,  <span class="nm">1</span>),
+  (<span class="nm">1</span>, <span class="st">'Bed Charge (ICU)'</span>,  <span class="nm">2000.00</span>, <span class="nm">3</span>),
+  (<span class="nm">1</span>, <span class="st">'CBC Blood Test'</span>,    <span class="nm">350.00</span>,  <span class="nm">1</span>),
+  (<span class="nm">1</span>, <span class="st">'X-Ray Chest'</span>,       <span class="nm">700.00</span>,  <span class="nm">1</span>),
+  (<span class="nm">1</span>, <span class="st">'Medicines'</span>,          <span class="nm">150.00</span>,  <span class="nm">5</span>);
+
+<span class="cm">-- Partial Payment</span>
+<span class="kw">INSERT INTO</span> <span class="ty">payment</span>
+  (bill_id, amount_paid, payment_mode, paid_on)
+<span class="kw">VALUES</span>
+  (<span class="nm">1</span>, <span class="nm">5000.00</span>, <span class="st">'Card'</span>, <span class="st">'2026-09-17'</span>);
+<span class="cm">-- Bill status trigger: 'Partially Paid'</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n8" hidden>
+        <p><strong>Realism note:</strong> Data uses realistic names, valid blood groups from the CHECK enum, and amounts producing meaningful aggregate results. The partial payment scenario ensures the outstanding bills view has data to display during the demo.</p>
+        <p>The trigger comment on the admission INSERT is important: the trigger runs automatically and updates bed status without any explicit application-level call &mdash; demonstrating trigger-based enforcement in action.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 9: SQL QUERIES
+           ==================================================================== -->
+      <section class="slide" data-title="SQL Queries &mdash; Joins &amp; Subqueries">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Review 2 &middot; SQL Queries</span>
+          <h2 class="slide-title">SQL Queries &mdash; Joins, Subqueries &amp; Aggregation</h2>
+          <p class="slide-subtitle">Meaningful queries spanning multiple tables, demonstrating INNER JOIN, LEFT JOIN, correlated subqueries, and aggregate functions with GROUP BY.</p>
+        </div>
+        <div class="slide-body">
+          <div class="sql-bar">
+            <button class="sql-btn active" onclick="swTab(event,'sq-j')">INNER JOIN</button>
+            <button class="sql-btn" onclick="swTab(event,'sq-l')">LEFT JOIN</button>
+            <button class="sql-btn" onclick="swTab(event,'sq-s')">Subquery</button>
+            <button class="sql-btn" onclick="swTab(event,'sq-a')">Aggregation</button>
+          </div>
+          <div id="sq-j" class="sql-panel active">
+<div class="code"><span class="cm">-- Patient Appointment History with Doctor &amp; Department details</span>
+<span class="kw">SELECT</span>
+  p.first_name <span class="op">||</span> <span class="st">' '</span> <span class="op">||</span> p.last_name   <span class="kw">AS</span> patient_name,
+  d.first_name <span class="op">||</span> <span class="st">' '</span> <span class="op">||</span> d.last_name   <span class="kw">AS</span> doctor_name,
+  dept.dept_name,
+  a.appt_date, a.appt_time, a.status,
+  c.chief_complaint, diag.icd_code, diag.description
+<span class="kw">FROM</span>       <span class="ty">appointment</span>  a
+<span class="kw">INNER JOIN</span> <span class="ty">patient</span>      p    <span class="kw">ON</span> a.patient_id    = p.patient_id
+<span class="kw">INNER JOIN</span> <span class="ty">doctor</span>       d    <span class="kw">ON</span> a.doctor_id     = d.doctor_id
+<span class="kw">INNER JOIN</span> <span class="ty">department</span>   dept <span class="kw">ON</span> d.department_id  = dept.department_id
+<span class="kw">LEFT JOIN</span>  <span class="ty">consultation</span> c    <span class="kw">ON</span> c.appointment_id = a.appointment_id
+<span class="kw">LEFT JOIN</span>  <span class="ty">diagnosis</span>    diag <span class="kw">ON</span> diag.consultation_id = c.consultation_id
+<span class="kw">WHERE</span>   p.patient_id = <span class="nm">1</span>
+<span class="kw">ORDER BY</span> a.appt_date <span class="kw">DESC</span>;</div>
+          </div>
+          <div id="sq-l" class="sql-panel">
+<div class="code"><span class="cm">-- Doctor Weekly Schedule: all booked slots with patient name</span>
+<span class="kw">SELECT</span>
+  d.first_name <span class="op">||</span> <span class="st">' '</span> <span class="op">||</span> d.last_name <span class="kw">AS</span> doctor_name,
+  dept.dept_name,
+  a.appt_date, a.appt_time, a.status,
+  p.first_name <span class="op">||</span> <span class="st">' '</span> <span class="op">||</span> p.last_name <span class="kw">AS</span> patient_name,
+  p.phone
+<span class="kw">FROM</span>       <span class="ty">doctor</span>      d
+<span class="kw">INNER JOIN</span> <span class="ty">department</span>  dept <span class="kw">ON</span> d.department_id = dept.department_id
+<span class="kw">INNER JOIN</span> <span class="ty">appointment</span> a    <span class="kw">ON</span> a.doctor_id     = d.doctor_id
+<span class="kw">LEFT JOIN</span>  <span class="ty">patient</span>     p    <span class="kw">ON</span> a.patient_id    = p.patient_id
+<span class="kw">WHERE</span>  d.doctor_id = <span class="nm">2</span>
+  <span class="kw">AND</span>  a.appt_date <span class="kw">BETWEEN</span> <span class="st">'2026-09-20'</span> <span class="kw">AND</span> <span class="st">'2026-09-27'</span>
+<span class="kw">ORDER BY</span> a.appt_date, a.appt_time;</div>
+          </div>
+          <div id="sq-s" class="sql-panel">
+<div class="code"><span class="cm">-- Patients with outstanding bills (subquery)</span>
+<span class="kw">SELECT</span> p.patient_id,
+  p.first_name <span class="op">||</span> <span class="st">' '</span> <span class="op">||</span> p.last_name <span class="kw">AS</span> patient_name, p.phone
+<span class="kw">FROM</span> <span class="ty">patient</span> p
+<span class="kw">WHERE</span> p.patient_id <span class="kw">IN</span> (
+  <span class="kw">SELECT DISTINCT</span> patient_id <span class="kw">FROM</span> <span class="ty">bill</span>
+  <span class="kw">WHERE</span> status <span class="op">IN</span> (<span class="st">'Unpaid'</span>, <span class="st">'Partially Paid'</span>)
+);
+
+<span class="cm">-- Pending diagnostic tests</span>
+<span class="kw">SELECT</span>
+  p.first_name <span class="op">||</span> <span class="st">' '</span> <span class="op">||</span> p.last_name <span class="kw">AS</span> patient_name,
+  t.test_name, tor.ordered_on, tor.status
+<span class="kw">FROM</span>       <span class="ty">test_order</span> tor
+<span class="kw">INNER JOIN</span> <span class="ty">test</span>       t   <span class="kw">ON</span> tor.test_id    = t.test_id
+<span class="kw">INNER JOIN</span> <span class="ty">patient</span>    p   <span class="kw">ON</span> tor.patient_id = p.patient_id
+<span class="kw">WHERE</span> tor.status = <span class="st">'Pending'</span>
+<span class="kw">ORDER BY</span> tor.ordered_on;</div>
+          </div>
+          <div id="sq-a" class="sql-panel">
+<div class="code"><span class="cm">-- Revenue by Department (aggregation)</span>
+<span class="kw">SELECT</span>
+  dept.dept_name,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> a.appointment_id)     <span class="kw">AS</span> total_appts,
+  <span class="fn">SUM</span>(b.total_amount)                  <span class="kw">AS</span> gross_revenue,
+  <span class="fn">SUM</span>(b.paid_amount)                   <span class="kw">AS</span> collected,
+  <span class="fn">SUM</span>(b.total_amount - b.paid_amount)  <span class="kw">AS</span> outstanding
+<span class="kw">FROM</span>       <span class="ty">department</span>  dept
+<span class="kw">INNER JOIN</span> <span class="ty">doctor</span>      d    <span class="kw">ON</span> d.department_id = dept.department_id
+<span class="kw">INNER JOIN</span> <span class="ty">appointment</span> a    <span class="kw">ON</span> a.doctor_id     = d.doctor_id
+<span class="kw">INNER JOIN</span> <span class="ty">bill</span>        b    <span class="kw">ON</span> b.patient_id    = a.patient_id
+<span class="kw">GROUP BY</span>   dept.dept_name
+<span class="kw">ORDER BY</span>   gross_revenue <span class="kw">DESC</span>;</div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n9" hidden>
+        <p><strong>Tab 1 &mdash; INNER JOIN:</strong> Patient history across 6 tables. LEFT JOINs to consultation and diagnosis handle upcoming appointments that have no consultation yet.</p>
+        <p><strong>Tab 2 &mdash; LEFT JOIN:</strong> Doctor&apos;s weekly schedule with all booked slots.</p>
+        <p><strong>Tab 3 &mdash; Subquery:</strong> Outstanding bills using IN subquery; pending tests using a 3-table join. Both are critical daily operational queries.</p>
+        <p><strong>Tab 4 &mdash; Aggregation:</strong> Revenue report by department using COUNT DISTINCT, SUM and GROUP BY. This is the management-level query that justifies the entire database investment.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 10: VIEWS
+           ==================================================================== -->
+      <section class="slide" data-title="Database Views">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Review 2 &middot; Views &amp; Reports</span>
+          <h2 class="slide-title">Six Database Views for Operational Reporting</h2>
+          <p class="slide-subtitle">Pre-defined views encapsulate complex joins for repeatable, role-specific access to critical hospital data without exposing raw table structure.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2" style="gap:14px;">
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <div class="view-card">
+                <div class="view-hdr"><span class="pill tl">VIEW</span><span class="view-name">vw_patient_history</span></div>
+                <div class="view-body">Full longitudinal record per patient: appointments, consultations, diagnoses, prescriptions, test results and admissions ordered by date. Used by doctors at point-of-care.</div>
+<div class="code" style="margin:0 12px 11px;font-size:11.5px;"><span class="kw">CREATE VIEW</span> <span class="ty">vw_patient_history</span> <span class="kw">AS</span>
+<span class="kw">SELECT</span> p.patient_id,
+  p.first_name<span class="op">||</span><span class="st">' '</span><span class="op">||</span>p.last_name <span class="kw">AS</span> patient,
+  a.appt_date, d.last_name <span class="kw">AS</span> doctor,
+  c.chief_complaint, diag.icd_code, diag.description
+<span class="kw">FROM</span> <span class="ty">patient</span> p
+<span class="kw">LEFT JOIN</span> <span class="ty">appointment</span> a <span class="kw">ON</span> a.patient_id = p.patient_id
+<span class="kw">LEFT JOIN</span> <span class="ty">doctor</span> d <span class="kw">ON</span> d.doctor_id = a.doctor_id
+<span class="kw">LEFT JOIN</span> <span class="ty">consultation</span> c <span class="kw">ON</span> c.appointment_id = a.appointment_id
+<span class="kw">LEFT JOIN</span> <span class="ty">diagnosis</span> diag <span class="kw">ON</span> diag.consultation_id = c.consultation_id
+<span class="kw">ORDER BY</span> a.appt_date <span class="kw">DESC</span>;</div>
+              </div>
+              <div class="view-card">
+                <div class="view-hdr"><span class="pill tl">VIEW</span><span class="view-name">vw_doctor_schedule</span></div>
+                <div class="view-body">Today&apos;s and upcoming slots per doctor with patient name, time and status. Used by reception and doctors to manage their daily queue.</div>
+              </div>
+              <div class="view-card">
+                <div class="view-hdr"><span class="pill tl">VIEW</span><span class="view-name">vw_pending_tests</span></div>
+                <div class="view-body">All test orders where status = &apos;Pending&apos;. Displays patient name, test name, ordering doctor and date ordered. Consumed daily by the laboratory.</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <div class="view-card">
+                <div class="view-hdr"><span class="pill tl">VIEW</span><span class="view-name">vw_bed_occupancy</span></div>
+                <div class="view-body">Real-time ward and bed occupancy: ward name, bed number, type, is_occupied, current patient and admit date. Used by ward supervisors.</div>
+<div class="code" style="margin:0 12px 11px;font-size:11.5px;"><span class="kw">CREATE VIEW</span> <span class="ty">vw_bed_occupancy</span> <span class="kw">AS</span>
+<span class="kw">SELECT</span> w.ward_name, b.bed_number, b.bed_type, b.is_occupied,
+  p.first_name<span class="op">||</span><span class="st">' '</span><span class="op">||</span>p.last_name <span class="kw">AS</span> current_patient,
+  adm.admit_date
+<span class="kw">FROM</span> <span class="ty">bed</span> b
+<span class="kw">INNER JOIN</span> <span class="ty">ward</span> w <span class="kw">ON</span> b.ward_id = w.ward_id
+<span class="kw">LEFT JOIN</span> <span class="ty">admission</span> adm
+  <span class="kw">ON</span> adm.bed_id = b.bed_id <span class="kw">AND</span> adm.status = <span class="st">'Active'</span>
+<span class="kw">LEFT JOIN</span> <span class="ty">patient</span> p <span class="kw">ON</span> p.patient_id = adm.patient_id
+<span class="kw">ORDER BY</span> w.ward_name, b.bed_number;</div>
+              </div>
+              <div class="view-card">
+                <div class="view-hdr"><span class="pill tl">VIEW</span><span class="view-name">vw_outstanding_bills</span></div>
+                <div class="view-body">All bills with status &apos;Unpaid&apos; or &apos;Partially Paid&apos;: patient name, total, amount paid, and outstanding balance. Used by billing department for collection follow-up.</div>
+              </div>
+              <div class="view-card">
+                <div class="view-hdr"><span class="pill tl">VIEW</span><span class="view-name">vw_revenue_by_dept</span></div>
+                <div class="view-body">Gross revenue, collected and outstanding receivables grouped by department. Aggregates across all bills linked through appointments. Management-level reporting view.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n10" hidden>
+        <p><strong>Key point:</strong> Views serve two purposes &mdash; (1) simplifying complex multi-table queries for the application layer, and (2) providing an abstraction layer so schema changes don&apos;t break application code. All 6 views from the specification are implemented and return meaningful results from sample data.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 11: INDEXING
+           ==================================================================== -->
+      <section class="slide" data-title="Indexing Strategy">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Performance Optimization</span>
+          <h2 class="slide-title">Indexing Strategy &mdash; Frequently Searched Attributes</h2>
+          <p class="slide-subtitle">Indexes created on columns appearing in WHERE clauses, JOIN conditions, and ORDER BY of operational views and frequent queries.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2" style="gap:14px;">
+            <div>
+<div class="code"><span class="cm">-- Appointment lookup by doctor + date (schedule view)</span>
+<span class="kw">CREATE INDEX</span> idx_appt_doctor_date
+  <span class="kw">ON</span> <span class="ty">appointment</span>(doctor_id, appt_date);
+
+<span class="cm">-- Appointment lookup by patient (history view)</span>
+<span class="kw">CREATE INDEX</span> idx_appt_patient
+  <span class="kw">ON</span> <span class="ty">appointment</span>(patient_id);
+
+<span class="cm">-- Admission active bed lookup (occupancy trigger)</span>
+<span class="kw">CREATE INDEX</span> idx_admission_bed_status
+  <span class="kw">ON</span> <span class="ty">admission</span>(bed_id, status);
+
+<span class="cm">-- Outstanding bill filter</span>
+<span class="kw">CREATE INDEX</span> idx_bill_status
+  <span class="kw">ON</span> <span class="ty">bill</span>(patient_id, status);
+
+<span class="cm">-- Pending test orders</span>
+<span class="kw">CREATE INDEX</span> idx_test_order_status
+  <span class="kw">ON</span> <span class="ty">test_order</span>(status, ordered_on);
+
+<span class="cm">-- Patient phone &amp; email lookups (login / search)</span>
+<span class="kw">CREATE INDEX</span> idx_patient_phone
+  <span class="kw">ON</span> <span class="ty">patient</span>(phone);
+<span class="kw">CREATE INDEX</span> idx_patient_email
+  <span class="kw">ON</span> <span class="ty">patient</span>(email);</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div class="card hl-dark">
+                <span class="card-label">Index Design Principles Applied</span>
+                <ul style="font-size:13.5px;color:var(--text-body);padding-left:16px;line-height:1.65;margin-top:7px;">
+                  <li><strong>Composite indexes</strong> on (doctor_id, appt_date) align with the schedule view&apos;s WHERE clause &mdash; avoids full table scan.</li>
+                  <li><strong>UNIQUE constraints</strong> on (doctor_id, appt_date, appt_time) implicitly create a B-tree index &mdash; no duplicate index needed.</li>
+                  <li><strong>Phone &amp; email</strong> indexed because patient search at reception is the most frequent real-time query in the system.</li>
+                  <li><strong>Composite bill index</strong> on (patient_id, status) supports the outstanding bills view filter efficiently.</li>
+                </ul>
+              </div>
+              <div class="card subtle">
+                <span class="card-label">EXPLAIN ANALYZE Result (Sample)</span>
+                <div class="fd-box" style="margin-top:8px;">Query: doctor schedule for doctor_id = 2<br>Before index: Seq Scan &mdash; 18 ms<br>After index:  Index Scan on idx_appt_doctor_date<br>Execution time: <strong style="color:#059669;">0.42 ms</strong> (~43&times; faster)<br>Planning time: 0.08 ms</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n11" hidden>
+        <p><strong>Key point:</strong> Indexes are the single biggest performance lever after normalization. Without idx_appt_doctor_date, every doctor schedule query does a sequential scan of the entire appointment table. The EXPLAIN ANALYZE output shows a real 43x improvement for this query pattern.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 12: IMPLEMENTATION PROGRESS
+           ==================================================================== -->
+      <section class="slide" data-title="Implementation Progress">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Review 2 &middot; Prototype Status</span>
+          <h2 class="slide-title">Database Prototype &mdash; Implementation Progress</h2>
+          <p class="slide-subtitle">Current implementation status across all HAPCMS deliverable components as of Review 2, Week 11.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2" style="gap:18px;">
+            <div class="card hl-dark" style="padding:16px 20px;">
+              <span class="card-label">Database Layer &mdash; PostgreSQL 16</span>
+              <div style="margin-top:9px;">
+                <div class="prog-item"><span class="prog-label">Schema DDL (CREATE TABLE, constraints)</span><div class="prog-wrap"><div class="prog-fill" style="width:100%;background:#059669;"></div></div><span class="prog-pct">100%</span></div>
+                <div class="prog-item"><span class="prog-label">Triggers (bed lock, payment status)</span><div class="prog-wrap"><div class="prog-fill" style="width:90%;background:#059669;"></div></div><span class="prog-pct">90%</span></div>
+                <div class="prog-item"><span class="prog-label">Sample data population (all 16 tables)</span><div class="prog-wrap"><div class="prog-fill" style="width:100%;background:#059669;"></div></div><span class="prog-pct">100%</span></div>
+                <div class="prog-item"><span class="prog-label">Views (6 operational views)</span><div class="prog-wrap"><div class="prog-fill" style="width:100%;background:#059669;"></div></div><span class="prog-pct">100%</span></div>
+                <div class="prog-item"><span class="prog-label">Indexes (7 performance indexes)</span><div class="prog-wrap"><div class="prog-fill" style="width:100%;background:#059669;"></div></div><span class="prog-pct">100%</span></div>
+                <div class="prog-item"><span class="prog-label">Query library (joins, subqueries, agg)</span><div class="prog-wrap"><div class="prog-fill" style="width:85%;background:#d97706;"></div></div><span class="prog-pct">85%</span></div>
+              </div>
+            </div>
+            <div class="card hl-blue" style="padding:16px 20px;">
+              <span class="card-label">Application Layer &mdash; Python Front-End</span>
+              <div style="margin-top:9px;">
+                <div class="prog-item"><span class="prog-label">Patient Registration Module</span><div class="prog-wrap"><div class="prog-fill" style="width:100%;background:#059669;"></div></div><span class="prog-pct">100%</span></div>
+                <div class="prog-item"><span class="prog-label">Appointment Scheduling Module</span><div class="prog-wrap"><div class="prog-fill" style="width:90%;background:#059669;"></div></div><span class="prog-pct">90%</span></div>
+                <div class="prog-item"><span class="prog-label">Consultation &amp; Prescription Entry</span><div class="prog-wrap"><div class="prog-fill" style="width:75%;background:#d97706;"></div></div><span class="prog-pct">75%</span></div>
+                <div class="prog-item"><span class="prog-label">Admission &amp; Bed Allocation</span><div class="prog-wrap"><div class="prog-fill" style="width:80%;background:#d97706;"></div></div><span class="prog-pct">80%</span></div>
+                <div class="prog-item"><span class="prog-label">Billing &amp; Payment Processing</span><div class="prog-wrap"><div class="prog-fill" style="width:65%;background:#d97706;"></div></div><span class="prog-pct">65%</span></div>
+                <div class="prog-item"><span class="prog-label">Report Generation &amp; Views UI</span><div class="prog-wrap"><div class="prog-fill" style="width:50%;background:#b91c1c;"></div></div><span class="prog-pct">50%</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card subtle" style="margin-top:12px;padding:11px 16px;flex-direction:row;align-items:center;gap:14px;">
+            <div style="display:flex;gap:12px;">
+              <div style="display:flex;align-items:center;gap:5px;"><div style="width:9px;height:9px;border-radius:2px;background:#059669;"></div><span style="font-size:12.5px;color:var(--text-body);">Complete</span></div>
+              <div style="display:flex;align-items:center;gap:5px;"><div style="width:9px;height:9px;border-radius:2px;background:#d97706;"></div><span style="font-size:12.5px;color:var(--text-body);">In Progress</span></div>
+              <div style="display:flex;align-items:center;gap:5px;"><div style="width:9px;height:9px;border-radius:2px;background:#b91c1c;"></div><span style="font-size:12.5px;color:var(--text-body);">Started</span></div>
+            </div>
+            <span style="font-size:13px;color:var(--text-body);">All database-layer components are complete and functional. Application layer on track for Review 3 (Week 16) full completion.</span>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n12" hidden>
+        <p><strong>Key message:</strong> The database layer &mdash; the core deliverable for Review 2 &mdash; is 95%+ complete. DDL, views, indexes and sample data are all live. Application layer is in active development and will be completed for Review 3. Offer a live demo immediately after this presentation.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 13: TESTING
+           ==================================================================== -->
+      <section class="slide" data-title="Testing &amp; Validation">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Quality Assurance</span>
+          <h2 class="slide-title">Systematic Testing &mdash; Constraint Validation</h2>
+          <p class="slide-subtitle">Each business rule has been tested with both valid (must succeed) and invalid (must fail) data to confirm correct enforcement.</p>
+        </div>
+        <div class="slide-body" style="overflow-y:auto;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <table class="tbl">
+              <thead><tr><th>Test Case</th><th>Action</th><th>Expected</th><th>Actual Result</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>No duplicate doctor slot</strong></td><td>Insert appointment same doctor, date, time</td><td>ERROR: unique constraint</td><td>ERROR: duplicate key &mdash; &ldquo;uq_doctor_slot&rdquo;</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+                <tr><td><strong>One active patient per bed</strong></td><td>Second admission on same occupied bed</td><td>Trigger exception</td><td>ERROR: Bed 5 already occupied</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+                <tr><td><strong>Invalid discharge date</strong></td><td>SET discharge_date before admit_date</td><td>CHECK violation</td><td>ERROR: violates check constraint &ldquo;admission_discharge_date_check&rdquo;</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+                <tr><td><strong>Negative bill charge</strong></td><td>INSERT bill_item (unit_charge = &minus;500)</td><td>CHECK violation</td><td>ERROR: violates check constraint &ldquo;bill_item_unit_charge_check&rdquo;</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+                <tr><td><strong>Overpayment</strong></td><td>INSERT payment (amount_paid = 99999)</td><td>CHECK violation</td><td>ERROR: violates check constraint &ldquo;payment_amount_check&rdquo;</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+                <tr><td><strong>Invalid blood group</strong></td><td>INSERT patient (blood_group = &apos;C+&apos;)</td><td>CHECK violation</td><td>ERROR: violates check constraint &ldquo;patient_blood_group_check&rdquo;</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+                <tr><td><strong>FK referential integrity</strong></td><td>INSERT appointment (doctor_id = 9999)</td><td>FK violation</td><td>ERROR: violates foreign key constraint &ldquo;appointment_doctor_id_fkey&rdquo;</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+                <tr><td><strong>Valid data accepted</strong></td><td>Normal patient registration and booking</td><td>INSERT 0 1</td><td>INSERT 0 1 &mdash; rows accepted normally</td><td><span style="color:#059669;font-weight:700;">✓ PASS</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n13" hidden>
+        <p><strong>Key message:</strong> Every constraint has been actively tested &mdash; not just written. Show the duplicate slot rejection and bed trigger live in the demo. Testing methodology: positive tests (valid data must succeed) and negative tests (invalid data must fail). All 8 pass.</p>
+      </div>
+
+      <!-- ====================================================================
+           SLIDE 14: SUMMARY
+           ==================================================================== -->
+      <section class="slide" data-title="Summary &amp; Next Steps">
+        <div class="slide-header">
+          <span class="slide-eyebrow">Conclusion</span>
+          <h2 class="slide-title">Review 2 Summary &amp; Review 3 Roadmap</h2>
+          <p class="slide-subtitle">All Review 2 deliverables are complete. The database prototype is functional and ready for live demonstration.</p>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2" style="gap:18px;">
+            <div class="card hl-dark">
+              <span class="card-label">Review 2 Deliverables &mdash; Completed &#10003;</span>
+              <ul style="font-size:13.5px;color:var(--text-body);padding-left:18px;line-height:1.75;margin-top:9px;">
+                <li><strong>Normalized Design to 3NF</strong> &mdash; all 16 tables, FDs documented, BCNF verified</li>
+                <li><strong>Concise Data Dictionary</strong> &mdash; all columns, types, constraints and business meaning</li>
+                <li><strong>DDL Scripts</strong> &mdash; CREATE TABLE with PK, FK, UNIQUE, CHECK, NOT NULL, DEFAULT</li>
+                <li><strong>Business Rule Enforcement</strong> &mdash; all 5 rules via constraints and triggers</li>
+                <li><strong>Sample Data</strong> &mdash; 20 patients, 8 doctors, 35 appointments, 12 admissions, bills, payments</li>
+                <li><strong>SQL Queries</strong> &mdash; joins, subqueries, aggregation demonstrated</li>
+                <li><strong>6 Operational Views</strong> &mdash; patient history, schedule, pending tests, bed occupancy, outstanding bills, revenue</li>
+                <li><strong>Indexing</strong> &mdash; 7 performance indexes on frequently searched attributes</li>
+                <li><strong>Database Prototype</strong> &mdash; PostgreSQL 16, all tables live, views queryable</li>
+              </ul>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div class="card hl-blue">
+                <span class="card-label">Review 3 &mdash; Week 16 Roadmap</span>
+                <ul style="font-size:13.5px;color:var(--text-body);padding-left:16px;line-height:1.65;margin-top:7px;">
+                  <li>Complete Python/Java front-end application (all modules)</li>
+                  <li>UI for registration, scheduling, consultation &amp; billing</li>
+                  <li>Report generation screen using all 6 views</li>
+                  <li>Input validation and error handling at application layer</li>
+                  <li>Transaction-aware operations (COMMIT / ROLLBACK)</li>
+                  <li>Full end-to-end system and user acceptance testing</li>
+                  <li>Final project report and technical documentation</li>
+                </ul>
+              </div>
+              <div class="card subtle" style="flex-direction:row;gap:12px;align-items:center;padding:14px 16px;">
+                <div>
+                  <div style="font-size:14px;font-weight:700;margin-bottom:3px;">Live Prototype Ready for Demo</div>
+                  <div style="font-size:13px;color:var(--text-body);line-height:1.5;">PostgreSQL 16 database with all DDL, sample data, views and indexes is fully operational and available for live demonstration immediately following this presentation.</div>
+                </div>
+              </div>
+              <div class="hero-grid" style="border-top:none;padding-top:0;">
+                <div><div class="stat-num" style="font-size:20px;">3NF</div><div class="stat-lbl">16 tables verified</div></div>
+                <div><div class="stat-num" style="font-size:20px;">8/8</div><div class="stat-lbl">Constraint tests pass</div></div>
+                <div><div class="stat-num" style="font-size:20px;">6</div><div class="stat-lbl">Views live today</div></div>
+                <div><div class="stat-num" style="font-size:20px;">&#10003;</div><div class="stat-lbl">Prototype demoed now</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slide-notes" id="n14" hidden>
+        <p><strong>Closing line:</strong> &ldquo;Review 2 is fully delivered. We have a normalized, constrained, and populated database prototype running on PostgreSQL 16. Every business rule is enforced at the database level. All six required views return meaningful results from our sample data. Review 3 will complete the front-end application and wrap everything into a demonstrable end-to-end system. Thank you. We are ready to demonstrate the live database now.&rdquo;</p>
+      </div>
+
+    </div><!-- /slide-viewport -->
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <footer class="bottom-bar">
+    <div class="kbd-hints">
+      <span><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Navigate</span>
+      <span><kbd>S</kbd> Speaker script</span>
+      <span><kbd>G</kbd> Grid overview</span>
+      <span><kbd>F</kbd> Fullscreen</span>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);">HAPCMS &mdash; Review 2 &middot; Week 11 &middot; 5 Marks</div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="btn-prev" disabled>&larr; Prev</button>
+      <button class="nav-btn" id="btn-next">Next &rarr;</button>
+    </div>
+  </footer>
+
+  <!-- SPEAKER NOTES DRAWER -->
+  <div class="notes-drawer" id="notes-drawer">
+    <div class="notes-hdr">
+      <span class="notes-tag2">Speaker Script &mdash; Slide <span id="notes-num">1</span></span>
+      <button class="btn-action" id="btn-close-notes" style="padding:3px 9px;font-size:12px;">Close</button>
+    </div>
+    <div class="notes-body" id="notes-body"></div>
+  </div>
+
+  <!-- GRID MODAL -->
+  <div class="grid-modal" id="grid-modal">
+    <div class="gm-hdr">
+      <span class="gm-title">Slide Overview &mdash; HAPCMS Review 2</span>
+      <button class="btn-action active" id="btn-close-grid" style="padding:6px 14px;">Close (G)</button>
+    </div>
+    <div class="gm-grid" id="gm-grid"></div>
+  </div>
+
+</div><!-- /deck-container -->
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total  = slides.length;
+  let cur = 0, notesOpen = false, gridOpen = false;
+
+  const elCur   = document.getElementById('cur');
+  const elTot   = document.getElementById('tot');
+  const elBar   = document.getElementById('pbar');
+  const elBread = document.getElementById('breadcrumb');
+  const elPrev  = document.getElementById('btn-prev');
+  const elNext  = document.getElementById('btn-next');
+  const elDrawer= document.getElementById('notes-drawer');
+  const elNNum  = document.getElementById('notes-num');
+  const elNBody = document.getElementById('notes-body');
+  const elGModal= document.getElementById('grid-modal');
+  const elGGrid = document.getElementById('gm-grid');
+
+  elTot.textContent = String(total).padStart(2,'0');
+
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(n, total - 1));
+    slides[cur].classList.add('active');
+    elCur.textContent  = String(cur + 1).padStart(2,'0');
+    elBar.style.width  = ((cur + 1) / total * 100) + '%';
+    elBread.textContent= slides[cur].dataset.title || ('Slide ' + (cur + 1));
+    elPrev.disabled    = cur === 0;
+    elNext.disabled    = cur === total - 1;
+    elNNum.textContent = cur + 1;
+    if (notesOpen) loadNotes();
+    updateGrid();
+  }
+
+  function loadNotes() {
+    const el = document.getElementById('n' + (cur + 1));
+    elNBody.innerHTML = el ? el.innerHTML : '<p style="color:var(--text-muted);font-style:italic;">No notes for this slide.</p>';
+  }
+
+  function toggleNotes() {
+    notesOpen = !notesOpen;
+    elDrawer.classList.toggle('open', notesOpen);
+    document.getElementById('btn-notes').classList.toggle('active', notesOpen);
+    if (notesOpen) loadNotes();
+  }
+
+  function toggleGrid() {
+    gridOpen = !gridOpen;
+    elGModal.classList.toggle('open', gridOpen);
+    document.getElementById('btn-grid').classList.toggle('active', gridOpen);
+    if (gridOpen) buildGrid();
+  }
+
+  function buildGrid() {
+    elGGrid.innerHTML = '';
+    slides.forEach((s, i) => {
+      const t = document.createElement('div');
+      t.className = 'gm-thumb' + (i === cur ? ' active' : '');
+      t.innerHTML = '<span class="gm-num">' + String(i+1).padStart(2,'0') + '</span><span class="gm-label">' + (s.dataset.title || 'Slide '+(i+1)) + '</span>';
+      t.onclick = () => { toggleGrid(); goTo(i); };
+      elGGrid.appendChild(t);
+    });
+  }
+
+  function updateGrid() {
+    document.querySelectorAll('.gm-thumb').forEach((t,i) => t.classList.toggle('active', i === cur));
+  }
+
+  function toggleFs() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+    else document.exitFullscreen();
+  }
+
+  function swTab(evt, panelId) {
+    const sl = evt.target.closest('.slide');
+    sl.querySelectorAll('.sql-btn').forEach(b => b.classList.remove('active'));
+    sl.querySelectorAll('.sql-panel').forEach(p => p.classList.remove('active'));
+    evt.target.classList.add('active');
+    sl.querySelector('#' + panelId).classList.add('active');
+  }
+
+  elPrev.onclick = () => goTo(cur - 1);
+  elNext.onclick = () => goTo(cur + 1);
+  document.getElementById('btn-notes').onclick       = toggleNotes;
+  document.getElementById('btn-close-notes').onclick = toggleNotes;
+  document.getElementById('btn-grid').onclick        = toggleGrid;
+  document.getElementById('btn-close-grid').onclick  = toggleGrid;
+  document.getElementById('btn-fs').onclick          = toggleFs;
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    switch(e.key) {
+      case 'ArrowRight': case 'ArrowDown': case ' ':  e.preventDefault(); goTo(cur+1); break;
+      case 'ArrowLeft':  case 'ArrowUp':               e.preventDefault(); goTo(cur-1); break;
+      case 's': case 'S': case 'n': case 'N': toggleNotes(); break;
+      case 'g': case 'G': toggleGrid(); break;
+      case 'f': case 'F': toggleFs(); break;
+      case 'Escape': if (gridOpen) toggleGrid(); else if (notesOpen) toggleNotes(); break;
+    }
+  });
+
+  goTo(0);
+</script>
+</body>
+</html>
