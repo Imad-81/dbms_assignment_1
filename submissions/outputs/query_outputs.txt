@@ -1,0 +1,492 @@
+HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=HAPCMS — SQL Query Outputs
+Hospital Appointment & Patient Care Management System
+Generated : 22 September 2026, 02:58 PM IST
+Database  : PostgreSQL 16 (Neon Cloud)
+=
+
+
+================================================================================
+QUERY 1. All Departments
+================================================================================
+
+SQL:
+SELECT dept_id, name, location, phone FROM department ORDER BY name;
+
+RESULT:
+  ERROR: column "dept_id" does not exist
+LINE 1: SELECT dept_id, name, location, phone FROM department ORDER ...
+               ^
+
+================================================================================
+QUERY 2. All Doctors with Specialisation
+================================================================================
+
+SQL:
+SELECT d.doctor_id, d.first_name || ' ' || d.last_name AS doctor_name,
+                         d.specialisation, dp.name AS department
+                  FROM doctor d JOIN department dp ON d.dept_id = dp.dept_id
+                  ORDER BY dp.name, d.specialisation;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 3. All Patients (Summary)
+================================================================================
+
+SQL:
+SELECT patient_id, first_name || ' ' || last_name AS patient_name,
+                         date_of_birth, gender, blood_group, phone
+                  FROM patient ORDER BY last_name LIMIT 20;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 4. Appointments (Latest 20)
+================================================================================
+
+SQL:
+SELECT a.appointment_id,
+                         p.first_name || ' ' || p.last_name AS patient,
+                         d.first_name || ' ' || d.last_name AS doctor,
+                         a.appointment_date, a.appointment_time, a.status
+                  FROM appointment a
+                  JOIN patient p ON a.patient_id = p.patient_id
+                  JOIN doctor d ON a.doctor_id = d.doctor_id
+                  ORDER BY a.appointment_date DESC, a.appointment_time DESC
+                  LIMIT 20;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 5. Ward & Bed Occupancy Report
+================================================================================
+
+SQL:
+SELECT w.name AS ward_name, w.ward_type,
+                         COUNT(b.bed_id) AS total_beds,
+                         SUM(CASE WHEN b.status = 'OCCUPIED' THEN 1 ELSE 0 END) AS occupied,
+                         SUM(CASE WHEN b.status = 'AVAILABLE' THEN 1 ELSE 0 END) AS available,
+                         ROUND(100.0 * SUM(CASE WHEN b.status = 'OCCUPIED' THEN 1 ELSE 0 END)
+                               / COUNT(b.bed_id), 1) AS occupancy_pct
+                  FROM ward w JOIN bed b ON w.ward_id = b.ward_id
+                  GROUP BY w.ward_id, w.name, w.ward_type
+                  ORDER BY occupancy_pct DESC;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 6. Doctor Appointment Load
+================================================================================
+
+SQL:
+SELECT d.first_name || ' ' || d.last_name AS doctor,
+                         d.specialisation, dp.name AS department,
+                         COUNT(a.appointment_id) AS total_appointments,
+                         SUM(CASE WHEN a.status = 'COMPLETED' THEN 1 ELSE 0 END) AS completed,
+                         SUM(CASE WHEN a.status = 'SCHEDULED' THEN 1 ELSE 0 END) AS scheduled
+                  FROM doctor d
+                  LEFT JOIN appointment a ON d.doctor_id = a.doctor_id
+                  JOIN department dp ON d.dept_id = dp.dept_id
+                  GROUP BY d.doctor_id, d.first_name, d.last_name, d.specialisation, dp.name
+                  ORDER BY total_appointments DESC;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 7. Billing Summary (Latest 15 Bills)
+================================================================================
+
+SQL:
+SELECT b.bill_id,
+                         p.first_name || ' ' || p.last_name AS patient,
+                         b.bill_date,
+                         b.total_amount,
+                         b.amount_paid,
+                         b.total_amount - b.amount_paid AS balance_due,
+                         b.status
+                  FROM bill b JOIN patient p ON b.patient_id = p.patient_id
+                  ORDER BY b.bill_date DESC LIMIT 15;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 8. Lab Test Orders & Results
+================================================================================
+
+SQL:
+SELECT to2.order_id, lt.test_name, lt.category,
+                         p.first_name || ' ' || p.last_name AS patient,
+                         to2.ordered_date, to2.status, to2.result_value, lt.unit
+                  FROM test_order to2
+                  JOIN lab_test lt ON to2.test_id = lt.test_id
+                  JOIN consultation c ON to2.consultation_id = c.consultation_id
+                  JOIN appointment a ON c.appointment_id = a.appointment_id
+                  JOIN patient p ON a.patient_id = p.patient_id
+                  ORDER BY to2.ordered_date DESC LIMIT 20;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 9. Constraint Test — No Duplicate Bookings (should return 0 rows)
+================================================================================
+
+SQL:
+SELECT doctor_id, appointment_date, appointment_time, COUNT(*) AS duplicates
+                  FROM appointment
+                  GROUP BY doctor_id, appointment_date, appointment_time
+                  HAVING COUNT(*) > 1;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+QUERY 10. Table Row Counts (All 16 Tables)
+================================================================================
+
+SQL:
+SELECT 'department'     AS table_name, COUNT(*) AS row_count FROM department    UNION ALL
+                  SELECT 'doctor',                       COUNT(*) FROM doctor         UNION ALL
+                  SELECT 'doctor_schedule',              COUNT(*) FROM doctor_schedule UNION ALL
+                  SELECT 'patient',                      COUNT(*) FROM patient         UNION ALL
+                  SELECT 'appointment',                  COUNT(*) FROM appointment     UNION ALL
+                  SELECT 'consultation',                 COUNT(*) FROM consultation    UNION ALL
+                  SELECT 'diagnosis',                    COUNT(*) FROM diagnosis       UNION ALL
+                  SELECT 'prescription',                 COUNT(*) FROM prescription    UNION ALL
+                  SELECT 'prescription_item',            COUNT(*) FROM prescription_item UNION ALL
+                  SELECT 'lab_test',                     COUNT(*) FROM lab_test        UNION ALL
+                  SELECT 'test_order',                   COUNT(*) FROM test_order      UNION ALL
+                  SELECT 'ward',                         COUNT(*) FROM ward            UNION ALL
+                  SELECT 'bed',                          COUNT(*) FROM bed             UNION ALL
+                  SELECT 'admission',                    COUNT(*) FROM admission       UNION ALL
+                  SELECT 'bill',                         COUNT(*) FROM bill            UNION ALL
+                  SELECT 'payment',                      COUNT(*) FROM payment
+                  ORDER BY row_count DESC;
+
+RESULT:
+  ERROR: current transaction is aborted, commands ignored until end of transaction block
+
+================================================================================
+End of Query Outputs

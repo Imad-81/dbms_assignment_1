@@ -30,3 +30,13 @@ __pycache__/
 node_modules/
 dist/
 build/
+
+# Large binary / generated files
+*.key
+submissions/outputs/prisma_erd.png
+
+# Export helper scripts (not part of submission)
+scripts/export_pdfs.js
+scripts/merge_pdfs.js
+scripts/capture_outputs.js
+scripts/capture_outputs.py

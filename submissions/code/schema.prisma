@@ -1,0 +1,404 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../docs/prisma_erd.svg"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model admission {
+  admission_id        Int                   @id @default(autoincrement())
+  patient_id          Int
+  admitting_doctor_id Int
+  bed_id              Int
+  admission_date      DateTime              @default(now()) @db.Timestamptz(6)
+  discharge_date      DateTime?             @db.Timestamptz(6)
+  admission_reason    String
+  discharge_summary   String?
+  status              admission_status_type @default(ADMITTED)
+  bed                 bed                   @relation(fields: [bed_id], references: [bed_id], onUpdate: NoAction, map: "fk_admission_bed")
+  doctor              doctor                @relation(fields: [admitting_doctor_id], references: [doctor_id], onUpdate: NoAction, map: "fk_admission_doctor")
+  patient             patient               @relation(fields: [patient_id], references: [patient_id], onUpdate: NoAction, map: "fk_admission_patient")
+  bill                bill?
+
+  @@index([bed_id], map: "idx_admission_bed")
+  @@index([patient_id], map: "idx_admission_patient")
+  @@index([status], map: "idx_admission_status")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model appointment {
+  appointment_id      Int                     @id @default(autoincrement())
+  patient_id          Int
+  doctor_id           Int
+  appointment_date    DateTime                @db.Date
+  appointment_time    DateTime                @db.Time(6)
+  status              appointment_status_type @default(SCHEDULED)
+  appointment_type    appointment_visit_type  @default(NEW_VISIT)
+  reason_for_visit    String?
+  cancellation_reason String?
+  created_at          DateTime                @default(now()) @db.Timestamptz(6)
+  doctor              doctor                  @relation(fields: [doctor_id], references: [doctor_id], onUpdate: NoAction, map: "fk_appointment_doctor")
+  patient             patient                 @relation(fields: [patient_id], references: [patient_id], onUpdate: NoAction, map: "fk_appointment_patient")
+  bill                bill?
+  consultation        consultation?
+
+  @@unique([doctor_id, appointment_date, appointment_time], map: "uq_doctor_slot")
+  @@index([doctor_id, appointment_date], map: "idx_appointment_doctor_date")
+  @@index([patient_id], map: "idx_appointment_patient")
+  @@index([status], map: "idx_appointment_status")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bed {
+  bed_id     Int             @id @default(autoincrement())
+  ward_id    Int
+  bed_number String          @db.VarChar(20)
+  status     bed_status_type @default(AVAILABLE)
+  is_active  Boolean         @default(true)
+  admission  admission[]
+  ward       ward            @relation(fields: [ward_id], references: [ward_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_bed_ward")
+
+  @@unique([ward_id, bed_number], map: "uq_ward_bed")
+  @@index([ward_id, status], map: "idx_bed_ward_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bill {
+  bill_id              Int                 @id @default(autoincrement())
+  patient_id           Int
+  appointment_id       Int?                @unique
+  admission_id         Int?                @unique
+  bill_date            DateTime            @default(dbgenerated("CURRENT_DATE")) @db.Date
+  consultation_charges Decimal             @default(0.00) @db.Decimal(10, 2)
+  test_charges         Decimal             @default(0.00) @db.Decimal(10, 2)
+  bed_charges          Decimal             @default(0.00) @db.Decimal(10, 2)
+  pharmacy_charges     Decimal             @default(0.00) @db.Decimal(10, 2)
+  other_charges        Decimal             @default(0.00) @db.Decimal(10, 2)
+  discount_amount      Decimal             @default(0.00) @db.Decimal(10, 2)
+  tax_amount           Decimal             @default(0.00) @db.Decimal(10, 2)
+  total_amount         Decimal             @default(0.00) @db.Decimal(10, 2)
+  payment_status       bill_payment_status @default(PENDING)
+  created_at           DateTime            @default(now()) @db.Timestamptz(6)
+  admission            admission?          @relation(fields: [admission_id], references: [admission_id], onUpdate: NoAction, map: "fk_bill_admission")
+  appointment          appointment?        @relation(fields: [appointment_id], references: [appointment_id], onUpdate: NoAction, map: "fk_bill_appointment")
+  patient              patient             @relation(fields: [patient_id], references: [patient_id], onUpdate: NoAction, map: "fk_bill_patient")
+  payment              payment[]
+
+  @@index([patient_id], map: "idx_bill_patient")
+  @@index([payment_status], map: "idx_bill_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model consultation {
+  consultation_id        Int            @id @default(autoincrement())
+  appointment_id         Int            @unique
+  patient_id             Int
+  doctor_id              Int
+  consultation_timestamp DateTime       @default(now()) @db.Timestamptz(6)
+  symptoms               String
+  clinical_notes         String
+  blood_pressure         String?        @db.VarChar(15)
+  heart_rate             Int?
+  temperature_celsius    Decimal?       @db.Decimal(4, 1)
+  spo2_percent           Decimal?       @db.Decimal(4, 1)
+  follow_up_date         DateTime?      @db.Date
+  created_at             DateTime       @default(now()) @db.Timestamptz(6)
+  appointment            appointment    @relation(fields: [appointment_id], references: [appointment_id], onUpdate: NoAction, map: "fk_consultation_appointment")
+  doctor                 doctor         @relation(fields: [doctor_id], references: [doctor_id], onUpdate: NoAction, map: "fk_consultation_doctor")
+  patient                patient        @relation(fields: [patient_id], references: [patient_id], onUpdate: NoAction, map: "fk_consultation_patient")
+  diagnosis              diagnosis[]
+  prescription           prescription[]
+  test_order             test_order[]
+
+  @@index([patient_id], map: "idx_consultation_patient")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model department {
+  department_id      Int        @id @default(autoincrement())
+  department_name    String     @unique @db.VarChar(100)
+  building_floor     String     @db.VarChar(50)
+  head_of_department String?    @db.VarChar(100)
+  contact_phone      String?    @db.VarChar(20)
+  created_at         DateTime   @default(now()) @db.Timestamptz(6)
+  doctor             doctor[]
+  lab_test           lab_test[]
+  ward               ward[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model diagnosis {
+  diagnosis_id    Int                      @id @default(autoincrement())
+  consultation_id Int
+  icd_code        String                   @db.VarChar(20)
+  diagnosis_name  String                   @db.VarChar(200)
+  diagnosis_type  diagnosis_classification @default(PRIMARY)
+  remarks         String?
+  created_at      DateTime                 @default(now()) @db.Timestamptz(6)
+  consultation    consultation             @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_diagnosis_consultation")
+
+  @@index([consultation_id], map: "idx_diagnosis_consultation")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model doctor {
+  doctor_id        Int               @id @default(autoincrement())
+  department_id    Int
+  first_name       String            @db.VarChar(50)
+  last_name        String            @db.VarChar(50)
+  specialization   String            @db.VarChar(100)
+  license_number   String            @unique @db.VarChar(50)
+  consultation_fee Decimal           @default(0.00) @db.Decimal(10, 2)
+  phone            String            @unique @db.VarChar(20)
+  email            String            @unique @db.VarChar(100)
+  is_active        Boolean           @default(true)
+  created_at       DateTime          @default(now()) @db.Timestamptz(6)
+  admission        admission[]
+  appointment      appointment[]
+  consultation     consultation[]
+  department       department        @relation(fields: [department_id], references: [department_id], onUpdate: NoAction, map: "fk_doctor_department")
+  doctor_schedule  doctor_schedule[]
+  prescription     prescription[]
+  test_order       test_order[]
+
+  @@index([department_id], map: "idx_doctor_department")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model doctor_schedule {
+  schedule_id           Int      @id @default(autoincrement())
+  doctor_id             Int
+  day_of_week           String   @db.VarChar(15)
+  start_time            DateTime @db.Time(6)
+  end_time              DateTime @db.Time(6)
+  slot_duration_minutes Int      @default(15)
+  max_patients          Int      @default(20)
+  created_at            DateTime @default(now()) @db.Timestamptz(6)
+  doctor                doctor   @relation(fields: [doctor_id], references: [doctor_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_schedule_doctor")
+
+  @@unique([doctor_id, day_of_week, start_time], map: "uq_doctor_day_shift")
+  @@index([doctor_id, day_of_week], map: "idx_doctor_schedule_doctor")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model lab_test {
+  test_id          Int          @id @default(autoincrement())
+  department_id    Int
+  test_name        String       @db.VarChar(150)
+  test_code        String       @unique @db.VarChar(30)
+  test_category    String       @db.VarChar(50)
+  standard_price   Decimal      @default(0.00) @db.Decimal(10, 2)
+  sample_type      String       @db.VarChar(50)
+  normal_range     String?
+  turnaround_hours Int          @default(24)
+  created_at       DateTime     @default(now()) @db.Timestamptz(6)
+  department       department   @relation(fields: [department_id], references: [department_id], onUpdate: NoAction, map: "fk_test_department")
+  test_order       test_order[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model patient {
+  patient_id              Int            @id @default(autoincrement())
+  first_name              String         @db.VarChar(50)
+  last_name               String         @db.VarChar(50)
+  date_of_birth           DateTime       @db.Date
+  gender                  String         @db.VarChar(10)
+  blood_group             String         @db.VarChar(5)
+  phone                   String         @unique @db.VarChar(20)
+  email                   String?        @unique @db.VarChar(100)
+  address                 String
+  emergency_contact_name  String         @db.VarChar(100)
+  emergency_contact_phone String         @db.VarChar(20)
+  created_at              DateTime       @default(now()) @db.Timestamptz(6)
+  admission               admission[]
+  appointment             appointment[]
+  bill                    bill[]
+  consultation            consultation[]
+  prescription            prescription[]
+  test_order              test_order[]
+
+  @@index([last_name, first_name], map: "idx_patient_name")
+  @@index([phone], map: "idx_patient_phone")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model payment {
+  payment_id            Int                   @id @default(autoincrement())
+  bill_id               Int
+  payment_timestamp     DateTime              @default(now()) @db.Timestamptz(6)
+  amount_paid           Decimal               @db.Decimal(10, 2)
+  payment_method        payment_tender_method @default(CASH)
+  transaction_reference String?               @db.VarChar(100)
+  notes                 String?
+  bill                  bill                  @relation(fields: [bill_id], references: [bill_id], onUpdate: NoAction, map: "fk_payment_bill")
+
+  @@index([bill_id], map: "idx_payment_bill")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model prescription {
+  prescription_id      Int                 @id @default(autoincrement())
+  consultation_id      Int
+  patient_id           Int
+  doctor_id            Int
+  issue_date           DateTime            @default(dbgenerated("CURRENT_DATE")) @db.Date
+  special_instructions String?
+  created_at           DateTime            @default(now()) @db.Timestamptz(6)
+  consultation         consultation        @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_prescription_consultation")
+  doctor               doctor              @relation(fields: [doctor_id], references: [doctor_id], onUpdate: NoAction, map: "fk_prescription_doctor")
+  patient              patient             @relation(fields: [patient_id], references: [patient_id], onUpdate: NoAction, map: "fk_prescription_patient")
+  prescription_item    prescription_item[]
+
+  @@index([consultation_id], map: "idx_prescription_consultation")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model prescription_item {
+  item_id         Int          @id @default(autoincrement())
+  prescription_id Int
+  medicine_name   String       @db.VarChar(150)
+  dosage_form     String       @db.VarChar(50)
+  strength        String       @db.VarChar(50)
+  frequency       String       @db.VarChar(50)
+  duration_days   Int
+  route           String       @default("Oral") @db.VarChar(50)
+  instructions    String?
+  prescription    prescription @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_item_prescription")
+
+  @@index([prescription_id], map: "idx_prescription_item_presc")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model test_order {
+  order_id                 Int               @id @default(autoincrement())
+  consultation_id          Int
+  patient_id               Int
+  test_id                  Int
+  ordered_by_doctor_id     Int
+  order_date               DateTime          @default(now()) @db.Timestamptz(6)
+  sample_collected_date    DateTime?         @db.Timestamptz(6)
+  result_date              DateTime?         @db.Timestamptz(6)
+  test_result              String?
+  reference_range_observed String?
+  abnormal_flag            lab_abnormal_flag @default(PENDING)
+  technician_remarks       String?
+  order_status             lab_order_status  @default(ORDERED)
+  consultation             consultation      @relation(fields: [consultation_id], references: [consultation_id], onUpdate: NoAction, map: "fk_order_consultation")
+  doctor                   doctor            @relation(fields: [ordered_by_doctor_id], references: [doctor_id], onUpdate: NoAction, map: "fk_order_doctor")
+  patient                  patient           @relation(fields: [patient_id], references: [patient_id], onUpdate: NoAction, map: "fk_order_patient")
+  lab_test                 lab_test          @relation(fields: [test_id], references: [test_id], onUpdate: NoAction, map: "fk_order_test")
+
+  @@index([consultation_id], map: "idx_test_order_consultation")
+  @@index([patient_id], map: "idx_test_order_patient")
+  @@index([order_status], map: "idx_test_order_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ward {
+  ward_id       Int           @id @default(autoincrement())
+  department_id Int
+  ward_name     String        @unique @db.VarChar(50)
+  ward_type     ward_category @default(GENERAL)
+  floor_number  Int
+  daily_rate    Decimal       @default(0.00) @db.Decimal(10, 2)
+  total_beds    Int           @default(10)
+  created_at    DateTime      @default(now()) @db.Timestamptz(6)
+  bed           bed[]
+  department    department    @relation(fields: [department_id], references: [department_id], onUpdate: NoAction, map: "fk_ward_department")
+}
+
+enum admission_status_type {
+  ADMITTED
+  DISCHARGED
+  TRANSFERRED
+}
+
+enum appointment_status_type {
+  SCHEDULED
+  CONFIRMED
+  CHECKED_IN
+  IN_CONSULTATION
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum appointment_visit_type {
+  NEW_VISIT
+  FOLLOW_UP
+  EMERGENCY
+  ROUTINE_CHECKUP
+}
+
+enum bed_status_type {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+  RESERVED
+}
+
+enum bill_payment_status {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  REFUNDED
+  CANCELLED
+}
+
+enum diagnosis_classification {
+  PRIMARY
+  SECONDARY
+  PROVISIONAL
+  CONFIRMED
+}
+
+enum lab_abnormal_flag {
+  NORMAL
+  ABNORMAL
+  CRITICAL
+  PENDING
+}
+
+enum lab_order_status {
+  ORDERED
+  SAMPLE_COLLECTED
+  ANALYZING
+  COMPLETED
+  CANCELLED
+}
+
+enum payment_tender_method {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+  UPI
+  NET_BANKING
+  INSURANCE
+}
+
+enum ward_category {
+  GENERAL
+  SEMI_PRIVATE
+  PRIVATE
+  ICU
+  CCU
+  EMERGENCY
+}
