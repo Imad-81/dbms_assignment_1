@@ -352,3 +352,234 @@ export async function recordPayment(formData: FormData) {
     return { success: false, error: error.message || "Failed to record payment" };
   }
 }
+
+// ============================================================================
+// 6. RECORD DELETION ACTIONS (CASCADE / REFERENTIAL INTEGRITY TRANSACTIONS)
+// ============================================================================
+
+export async function deletePatient(patientId: number) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Release any active beds occupied by this patient
+      const activeAdmissions = await tx.admission.findMany({
+        where: { patient_id: patientId, status: "ADMITTED" },
+      });
+      for (const adm of activeAdmissions) {
+        await tx.bed.update({
+          where: { bed_id: adm.bed_id },
+          data: { status: "AVAILABLE" },
+        });
+      }
+
+      // 2. Delete payments linked to bills of this patient, then the bills
+      const patientBills = await tx.bill.findMany({
+        where: { patient_id: patientId },
+        select: { bill_id: true },
+      });
+      const billIds = patientBills.map((b) => b.bill_id);
+      if (billIds.length > 0) {
+        await tx.payment.deleteMany({
+          where: { bill_id: { in: billIds } },
+        });
+        await tx.bill.deleteMany({
+          where: { bill_id: { in: billIds } },
+        });
+      }
+
+      // 3. Delete diagnostic test orders for this patient
+      await tx.test_order.deleteMany({
+        where: { patient_id: patientId },
+      });
+
+      // 4. Delete clinical consultations and their prescriptions/diagnoses
+      const patientConsultations = await tx.consultation.findMany({
+        where: { patient_id: patientId },
+        select: { consultation_id: true },
+      });
+      const consultIds = patientConsultations.map((c) => c.consultation_id);
+
+      if (consultIds.length > 0) {
+        const prescriptions = await tx.prescription.findMany({
+          where: { consultation_id: { in: consultIds } },
+          select: { prescription_id: true },
+        });
+        const prescIds = prescriptions.map((p) => p.prescription_id);
+        if (prescIds.length > 0) {
+          await tx.prescription_item.deleteMany({
+            where: { prescription_id: { in: prescIds } },
+          });
+          await tx.prescription.deleteMany({
+            where: { prescription_id: { in: prescIds } },
+          });
+        }
+
+        await tx.diagnosis.deleteMany({
+          where: { consultation_id: { in: consultIds } },
+        });
+
+        await tx.consultation.deleteMany({
+          where: { consultation_id: { in: consultIds } },
+        });
+      }
+
+      // 5. Delete admissions
+      await tx.admission.deleteMany({
+        where: { patient_id: patientId },
+      });
+
+      // 6. Delete appointments
+      await tx.appointment.deleteMany({
+        where: { patient_id: patientId },
+      });
+
+      // 7. Delete patient
+      await tx.patient.delete({
+        where: { patient_id: patientId },
+      });
+    });
+
+    revalidatePath("/patients");
+    revalidatePath("/appointments");
+    revalidatePath("/inpatient");
+    revalidatePath("/lab");
+    revalidatePath("/billing");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error deleting patient:", error);
+    return { success: false, error: error.message || "Failed to delete patient" };
+  }
+}
+
+export async function deleteAppointment(appointmentId: number) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // If linked bill exists, delete payments and bill
+      const linkedBill = await tx.bill.findUnique({
+        where: { appointment_id: appointmentId },
+      });
+      if (linkedBill) {
+        await tx.payment.deleteMany({ where: { bill_id: linkedBill.bill_id } });
+        await tx.bill.delete({ where: { bill_id: linkedBill.bill_id } });
+      }
+
+      // If linked consultation exists, delete its child records
+      const linkedConsult = await tx.consultation.findUnique({
+        where: { appointment_id: appointmentId },
+      });
+      if (linkedConsult) {
+        const prescs = await tx.prescription.findMany({
+          where: { consultation_id: linkedConsult.consultation_id },
+          select: { prescription_id: true },
+        });
+        const prescIds = prescs.map((p) => p.prescription_id);
+        if (prescIds.length > 0) {
+          await tx.prescription_item.deleteMany({
+            where: { prescription_id: { in: prescIds } },
+          });
+          await tx.prescription.deleteMany({
+            where: { prescription_id: { in: prescIds } },
+          });
+        }
+        await tx.diagnosis.deleteMany({
+          where: { consultation_id: linkedConsult.consultation_id },
+        });
+        await tx.test_order.deleteMany({
+          where: { consultation_id: linkedConsult.consultation_id },
+        });
+        await tx.consultation.delete({
+          where: { consultation_id: linkedConsult.consultation_id },
+        });
+      }
+
+      await tx.appointment.delete({
+        where: { appointment_id: appointmentId },
+      });
+    });
+
+    revalidatePath("/appointments");
+    revalidatePath("/patients");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error deleting appointment:", error);
+    return { success: false, error: error.message || "Failed to delete appointment" };
+  }
+}
+
+export async function deleteAdmission(admissionId: number) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      const admission = await tx.admission.findUnique({
+        where: { admission_id: admissionId },
+      });
+
+      if (!admission) throw new Error("Admission record not found.");
+
+      // Release bed back to AVAILABLE
+      await tx.bed.update({
+        where: { bed_id: admission.bed_id },
+        data: { status: "AVAILABLE" },
+      });
+
+      // Delete linked bill and payments if exists
+      const linkedBill = await tx.bill.findUnique({
+        where: { admission_id: admissionId },
+      });
+      if (linkedBill) {
+        await tx.payment.deleteMany({ where: { bill_id: linkedBill.bill_id } });
+        await tx.bill.delete({ where: { bill_id: linkedBill.bill_id } });
+      }
+
+      await tx.admission.delete({
+        where: { admission_id: admissionId },
+      });
+    });
+
+    revalidatePath("/inpatient");
+    revalidatePath("/patients");
+    revalidatePath("/billing");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error deleting admission:", error);
+    return { success: false, error: error.message || "Failed to remove admission" };
+  }
+}
+
+export async function deleteTestOrder(orderId: number) {
+  try {
+    await prisma.test_order.delete({
+      where: { order_id: orderId },
+    });
+
+    revalidatePath("/lab");
+    revalidatePath("/patients");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error deleting lab order:", error);
+    return { success: false, error: error.message || "Failed to delete lab order" };
+  }
+}
+
+export async function deleteBill(billId: number) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.payment.deleteMany({
+        where: { bill_id: billId },
+      });
+      await tx.bill.delete({
+        where: { bill_id: billId },
+      });
+    });
+
+    revalidatePath("/billing");
+    revalidatePath("/patients");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error deleting bill:", error);
+    return { success: false, error: error.message || "Failed to delete invoice" };
+  }
+}

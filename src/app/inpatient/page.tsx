@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { AdmitPatientModal } from "@/components/inpatient/admit-patient-modal";
 import { DischargePatientModal } from "@/components/inpatient/discharge-patient-modal";
+import { AdmissionDeleteAction } from "@/components/inpatient/admission-delete-action";
 import {
   Bed,
   Building,
@@ -310,6 +311,11 @@ export default async function InpatientPage() {
                         Dossier
                       </Link>
                       <DischargePatientModal
+                        admissionId={adm.admission_id}
+                        patientName={`${adm.patient.first_name} ${adm.patient.last_name}`}
+                        bedNumber={adm.bed.bed_number}
+                      />
+                      <AdmissionDeleteAction
                         admissionId={adm.admission_id}
                         patientName={`${adm.patient.first_name} ${adm.patient.last_name}`}
                         bedNumber={adm.bed.bed_number}

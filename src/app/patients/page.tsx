@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { RegisterPatientModal } from "@/components/patients/register-patient-modal";
+import { PatientDeleteAction } from "@/components/patients/patient-delete-action";
 import {
   Users,
   Search,
@@ -206,13 +207,20 @@ export default async function PatientsPage({
                       </td>
 
                       <td className="px-5 py-3.5 text-right">
-                        <Link
-                          href={`/patients/${p.patient_id}`}
-                          className="inline-flex items-center gap-1 rounded-lg border border-warm-border bg-white px-2.5 py-1 text-xs font-semibold text-charcoal-800 shadow-sm hover:bg-warm-subtle hover:text-terracotta-600"
-                        >
-                          <span>EMR Dossier</span>
-                          <ChevronRight className="h-3.5 w-3.5 text-stone-400" />
-                        </Link>
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/patients/${p.patient_id}`}
+                            className="inline-flex items-center gap-1 rounded-lg border border-warm-border bg-white px-2.5 py-1 text-xs font-semibold text-charcoal-800 shadow-sm hover:bg-warm-subtle hover:text-terracotta-600"
+                          >
+                            <span>EMR Dossier</span>
+                            <ChevronRight className="h-3.5 w-3.5 text-stone-400" />
+                          </Link>
+                          <PatientDeleteAction
+                            patientId={p.patient_id}
+                            patientName={`${p.first_name} ${p.last_name}`}
+                            iconOnly={true}
+                          />
+                        </div>
                       </td>
                     </tr>
                   );

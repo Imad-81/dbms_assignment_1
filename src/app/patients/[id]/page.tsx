@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate, formatDateTime, formatTime } from "@/lib/utils";
+import { PatientDeleteAction } from "@/components/patients/patient-delete-action";
 import {
   ArrowLeft,
   Calendar,
@@ -84,7 +85,7 @@ export default async function PatientDossierPage({
   return (
     <div className="space-y-6">
       {/* Back Link & Navigation */}
-      <div>
+      <div className="flex items-center justify-between">
         <Link
           href="/patients"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-500 hover:text-terracotta-600"
@@ -92,6 +93,13 @@ export default async function PatientDossierPage({
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to Master Patient Registry</span>
         </Link>
+        <PatientDeleteAction
+          patientId={patient.patient_id}
+          patientName={`${patient.first_name} ${patient.last_name}`}
+          buttonLabel="Delete Patient Record"
+          iconOnly={false}
+          redirectTo="/patients"
+        />
       </div>
 
       {/* Patient Dossier Header Card */}

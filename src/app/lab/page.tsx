@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/utils";
 import { OrderTestModal } from "@/components/lab/order-test-modal";
 import { RecordResultModal } from "@/components/lab/record-result-modal";
+import { TestOrderDeleteAction } from "@/components/lab/test-order-delete-action";
 import {
   FlaskConical,
   ShieldAlert,
@@ -174,11 +175,18 @@ export default async function LabPage() {
                   </td>
 
                   <td className="py-3 text-right">
-                    <RecordResultModal
-                      orderId={ord.order_id}
-                      testName={ord.lab_test.test_name}
-                      patientName={`${ord.patient.first_name} ${ord.patient.last_name}`}
-                    />
+                    <div className="flex items-center justify-end gap-1.5">
+                      <RecordResultModal
+                        orderId={ord.order_id}
+                        testName={ord.lab_test.test_name}
+                        patientName={`${ord.patient.first_name} ${ord.patient.last_name}`}
+                      />
+                      <TestOrderDeleteAction
+                        orderId={ord.order_id}
+                        testName={ord.lab_test.test_name}
+                        patientName={`${ord.patient.first_name} ${ord.patient.last_name}`}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -281,11 +289,18 @@ export default async function LabPage() {
                       </span>
                     </td>
                     <td className="py-2.5 text-right">
-                      <RecordResultModal
-                        orderId={to.order_id}
-                        testName={to.lab_test.test_name}
-                        patientName={`${to.patient.first_name} ${to.patient.last_name}`}
-                      />
+                      <div className="flex items-center justify-end gap-1.5">
+                        <RecordResultModal
+                          orderId={to.order_id}
+                          testName={to.lab_test.test_name}
+                          patientName={`${to.patient.first_name} ${to.patient.last_name}`}
+                        />
+                        <TestOrderDeleteAction
+                          orderId={to.order_id}
+                          testName={to.lab_test.test_name}
+                          patientName={`${to.patient.first_name} ${to.patient.last_name}`}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}

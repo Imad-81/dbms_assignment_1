@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { formatDate, formatTime } from "@/lib/utils";
 import { BookAppointmentModal } from "@/components/appointments/book-appointment-modal";
 import { AppointmentStatusChanger } from "@/components/appointments/appointment-status-changer";
+import { AppointmentDeleteAction } from "@/components/appointments/appointment-delete-action";
 import {
   Calendar,
   Clock,
@@ -252,10 +253,17 @@ export default async function AppointmentsPage({
                     </td>
 
                     <td className="px-5 py-3.5">
-                      <AppointmentStatusChanger
-                        appointmentId={a.appointment_id}
-                        currentStatus={a.status}
-                      />
+                      <div className="flex items-center gap-2">
+                        <AppointmentStatusChanger
+                          appointmentId={a.appointment_id}
+                          currentStatus={a.status}
+                        />
+                        <AppointmentDeleteAction
+                          appointmentId={a.appointment_id}
+                          patientName={`${a.patient.first_name} ${a.patient.last_name}`}
+                          slotTime={`${formatDate(a.appointment_date)} ${formatTime(a.appointment_time)}`}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))

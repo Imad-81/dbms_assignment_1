@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/utils";
 import { RecordPaymentModal } from "@/components/billing/record-payment-modal";
+import { BillDeleteAction } from "@/components/billing/bill-delete-action";
 import {
   Receipt,
   CreditCard,
@@ -146,6 +147,7 @@ export default async function BillingPage({
                 <th className="px-4 py-3 text-right">Total Paid</th>
                 <th className="px-4 py-3 text-right">Balance Due</th>
                 <th className="px-4 py-3 text-center">Status</th>
+                <th className="px-4 py-3 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-warm-border">
@@ -216,6 +218,14 @@ export default async function BillingPage({
                       >
                         {b.payment_status}
                       </span>
+                    </td>
+
+                    <td className="px-4 py-3 text-right">
+                      <BillDeleteAction
+                        billId={b.bill_id}
+                        patientName={`${b.patient.first_name} ${b.patient.last_name}`}
+                        totalAmount={formatCurrency(Number(b.total_amount))}
+                      />
                     </td>
                   </tr>
                 );
