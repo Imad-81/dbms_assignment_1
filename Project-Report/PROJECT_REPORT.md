@@ -840,7 +840,6 @@ DBMS-Course-Project/
 │   ├── package.json                    # Web dependencies
 │   └── README.md                       # Web setup instructions
 ├── archive/                            # Archived working files (docs, html, submissions, sql)
-├── run_db.py                           # Python CLI test & report runner
 └── README.md                           # Main Project Readme
 ```
 
@@ -850,9 +849,8 @@ DBMS-Course-Project/
 git clone https://github.com/Imad-81/dbms_assignment_1.git
 cd dbms_assignment_1
 
-# 2. Run Database Test Queries
-./.venv/bin/python run_db.py test
-./.venv/bin/python run_db.py reports
+# 2. Run Database Integrity Tests & Audits
+npm test
 
 # 3. Launch Web Application
 npm run dev

@@ -855,7 +855,6 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;</cod
 │   ├── package.json
 │   └── README.md
 ├── archive/                            # Archived working files (docs, html, submissions, sql)
-├── run_db.py                           # Python CLI test & report runner
 └── README.md                           # Main Project README</code></pre>
 
   <h3>Local Setup Commands</h3>
@@ -863,9 +862,8 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;</cod
 git clone https://github.com/Imad-81/dbms_assignment_1.git
 cd dbms_assignment_1
 
-# 2. Run Database Integrity Tests & Reports
-./.venv/bin/python run_db.py test
-./.venv/bin/python run_db.py reports
+# 2. Run Database Integrity Tests & Audits
+npm test
 
 # 3. Launch Web Application
 npm run dev

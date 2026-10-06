@@ -9,8 +9,7 @@
     "start": "npm --prefix web run start",
     "studio": "npm --prefix web run studio",
     "seed": "npm --prefix web run seed",
-    "db:test": "./.venv/bin/python run_db.py test",
-    "db:reports": "./.venv/bin/python run_db.py reports"
+    "test": "node web/scripts/prisma_demo.js"
   },
   "keywords": [
     "dbms",

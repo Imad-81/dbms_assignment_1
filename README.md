@@ -55,7 +55,6 @@ DBMS-Course-Project/
 │   ├── seed_realistic.ts                  ← TypeScript database seeder
 │   └── generate_pdf_report.js             ← Puppeteer academic PDF report builder
 │
-├── run_db.py                              ← 🐍 Interactive Python CLI runner (tests, reports, shell)
 ├── package.json                           ← Root delegation scripts for npm commands
 └── README.md                              ← Main project documentation (this file)
 ```
@@ -94,7 +93,6 @@ Built on **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Pr
 
 ### 1. Prerequisites
 - **Node.js:** v18.0 or later
-- **Python:** v3.10 or later
 - **PostgreSQL Database:** PostgreSQL 14+ or Neon Cloud connection string
 
 ### 2. Setup & Installation
@@ -105,11 +103,6 @@ cd dbms_assignment_1
 
 # Install Node dependencies
 npm install
-
-# Setup Python virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-pip install psycopg[binary] python-dotenv tabulate
 ```
 
 ### 3. Configure Database URL
@@ -118,13 +111,10 @@ Create a `.env` file in the project root:
 DATABASE_URL="postgresql://username:password@ep-sample.neon.tech/hapcms?sslmode=require"
 ```
 
-### 4. Run Database Tests & Analytical Reports
+### 4. Run Relational Database Tests & Audits
 ```bash
-# Run database constraint integrity tests (TC-01 to TC-07)
-npm run db:test
-
-# Run analytical reports (Patient summary, bed occupancy, doctor roster, financial audit)
-npm run db:reports
+# Run deep relational graph traversal & constraint audits via Prisma
+npm test
 ```
 
 ### 5. Launch the Web Application
