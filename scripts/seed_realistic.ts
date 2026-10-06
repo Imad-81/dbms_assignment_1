@@ -150,7 +150,7 @@ async function main() {
     { bed_id: 15, ward_id: 2, bed_number: "ORTH-09", status: "AVAILABLE" as const, is_active: true },
     { bed_id: 16, ward_id: 2, bed_number: "ORTH-10", status: "AVAILABLE" as const, is_active: true },
     // Ward 3 (Executive Private): 6 beds
-    { bed_id: 17, ward_id: 3, bed_number: "EXEC-01", status: "OCCUPIED" as const, is_active: true },
+    { bed_id: 17, ward_id: 3, bed_number: "EXEC-01", status: "AVAILABLE" as const, is_active: true },
     { bed_id: 18, ward_id: 3, bed_number: "EXEC-02", status: "AVAILABLE" as const, is_active: true },
     { bed_id: 19, ward_id: 3, bed_number: "EXEC-03", status: "AVAILABLE" as const, is_active: true },
     { bed_id: 20, ward_id: 3, bed_number: "EXEC-04", status: "OCCUPIED" as const, is_active: true },
@@ -160,7 +160,7 @@ async function main() {
     { bed_id: 23, ward_id: 4, bed_number: "EMRG-01", status: "OCCUPIED" as const, is_active: true },
     { bed_id: 24, ward_id: 4, bed_number: "EMRG-02", status: "AVAILABLE" as const, is_active: true },
     { bed_id: 25, ward_id: 4, bed_number: "EMRG-03", status: "AVAILABLE" as const, is_active: true },
-    { bed_id: 26, ward_id: 4, bed_number: "EMRG-04", status: "OCCUPIED" as const, is_active: true },
+    { bed_id: 26, ward_id: 4, bed_number: "EMRG-04", status: "AVAILABLE" as const, is_active: true },
     { bed_id: 27, ward_id: 4, bed_number: "EMRG-05", status: "AVAILABLE" as const, is_active: true },
     { bed_id: 28, ward_id: 4, bed_number: "EMRG-06", status: "AVAILABLE" as const, is_active: true },
   ];

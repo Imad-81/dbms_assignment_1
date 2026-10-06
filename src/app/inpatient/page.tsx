@@ -232,7 +232,11 @@ export default async function InpatientPage() {
                       </div>
                     ) : (
                       <div className="mt-4 text-[11px] text-stone-400">
-                        {b.status === "AVAILABLE" ? "Ready for intake" : "Offline"}
+                        {b.status === "AVAILABLE"
+                          ? "Ready for intake"
+                          : b.status === "MAINTENANCE"
+                          ? "Under Maintenance"
+                          : "Offline"}
                       </div>
                     )}
                   </div>

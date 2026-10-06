@@ -174,7 +174,7 @@ INSERT INTO bed (bed_id, ward_id, bed_number, status, is_active) VALUES
 (4, 2, 'ORTH-BED-01', 'AVAILABLE', true),
 (5, 2, 'ORTH-BED-02', 'MAINTENANCE', true),
 (6, 2, 'ORTH-BED-03', 'AVAILABLE', true),
-(7, 3, 'EXEC-SUITE-01', 'OCCUPIED', true),
+(7, 3, 'EXEC-SUITE-01', 'AVAILABLE', true),
 (8, 3, 'EXEC-SUITE-02', 'AVAILABLE', true),
 (9, 4, 'EMRG-BAY-01', 'AVAILABLE', true),
 (10, 4, 'EMRG-BAY-02', 'AVAILABLE', true);
