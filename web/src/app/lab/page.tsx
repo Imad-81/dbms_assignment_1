@@ -72,7 +72,12 @@ export default async function LabPage() {
         <OrderTestModal
           patients={patients}
           doctors={doctors}
-          tests={catalog}
+          tests={catalog.map((t) => ({
+            test_id: t.test_id,
+            test_name: t.test_name,
+            test_code: t.test_code,
+            standard_price: Number(t.standard_price),
+          }))}
           consultations={consultations}
         />
       </div>

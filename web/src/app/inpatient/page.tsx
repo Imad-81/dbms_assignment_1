@@ -55,7 +55,11 @@ export default async function InpatientPage() {
     }),
     prisma.bed.findMany({
       where: { status: "AVAILABLE" },
-      include: { ward: true },
+      select: {
+        bed_id: true,
+        bed_number: true,
+        ward: { select: { ward_name: true } },
+      },
       orderBy: { bed_number: "asc" },
     }),
   ]);

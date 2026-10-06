@@ -28,7 +28,9 @@ __pycache__/
 
 # Node / Scratch
 node_modules/
+web/node_modules
 .next/
+web/.next/
 dist/
 build/
 

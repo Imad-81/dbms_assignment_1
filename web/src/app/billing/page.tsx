@@ -65,7 +65,15 @@ export default async function BillingPage({
             Comprehensive billing ledger, fee breakdowns, multi-tender transactions, and outstanding balance audits.
           </p>
         </div>
-        <RecordPaymentModal bills={bills} />
+        <RecordPaymentModal
+          bills={bills.map((b) => ({
+            bill_id: b.bill_id,
+            total_amount: Number(b.total_amount),
+            payment_status: b.payment_status,
+            patient: { first_name: b.patient.first_name, last_name: b.patient.last_name },
+            payment: b.payment.map((p) => ({ amount_paid: Number(p.amount_paid) })),
+          }))}
+        />
       </div>
 
       {/* Financial KPIs */}
