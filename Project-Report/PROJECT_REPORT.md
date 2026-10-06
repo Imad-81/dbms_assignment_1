@@ -10,7 +10,7 @@
 - **Roll Number:** 25WU0101048
 - **Course Name:** Database Management Systems (DBMS)
 - **Faculty / Course Instructor:** Dr. Kiran Mayee Adavala
-- **Academic Year:** 2025–2026
+- **Academic Year:** 2025–2029
 - **Database Engine:** PostgreSQL 16 (Neon Cloud Serverless)
 - **GitHub Repository:** [https://github.com/Imad-81/dbms_assignment_1](https://github.com/Imad-81/dbms_assignment_1)
 

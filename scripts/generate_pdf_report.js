@@ -344,7 +344,7 @@ const htmlContent = `<!DOCTYPE html>
   </div>
 
   <div class="cover-body">
-    <div class="cover-badge">Academic Project Report • 2025–2026</div>
+    <div class="cover-badge">Academic Project Report • 2025–2029</div>
     <h1 class="cover-title">Hospital Appointment and Patient Care Management System (HAPCMS)</h1>
     <div class="cover-subtitle">
       A 3NF-Normalized Relational Database Architecture with ACID Integrity Constraints, Operational Views, and Full-Stack Next.js 14 Clinical Management Interface
@@ -369,7 +369,7 @@ const htmlContent = `<!DOCTYPE html>
       </div>
       <div class="detail-row">
         <span class="detail-label">Academic Year:</span>
-        <span class="detail-value">2025–2026</span>
+        <span class="detail-value">2025–2029</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">RDBMS Engine:</span>

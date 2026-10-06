@@ -17,9 +17,10 @@ This directory contains the complete formal project report fulfilling all **16 r
 
 | File | Type | Description |
 |---|---|---|
-| [`HAPCMS_Project_Report.pdf`](HAPCMS_Project_Report.pdf) | **PDF Document (22 Pages)** | Official formatted submission report with cover page, ERD, tables, queries, screenshots, and test results. |
-| [`PROJECT_REPORT.md`](PROJECT_REPORT.md) | **Markdown Source** | Complete text source with all 16 chapters and SQL listings. |
-| [`assets/`](assets/) | **Assets** | High-resolution ER diagram (`prisma_erd.png`). |
+| [`HAPCMS_Project_Report.docx`](HAPCMS_Project_Report.docx) | **Editable Word Document** | Editable submission report with university cover page, ERD, tables, queries, screenshots, and test results. |
+| [`HAPCMS_Project_Report.pdf`](HAPCMS_Project_Report.pdf) | **PDF Document (22 Pages)** | Official formatted submission report matching the standard university format. |
+| [`PROJECT_REPORT.md`](PROJECT_REPORT.md) | **Markdown Source** | Complete text source with all chapters and SQL listings. |
+| [`assets/`](assets/) | **Assets** | High-resolution ER diagram (`prisma_erd.png`) and Woxsen University logo. |
 | [`screenshots/`](screenshots/) | **Visual UI Captures** | High-resolution screenshots of the 6 core Next.js application modules. |
 
 ---
