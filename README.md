@@ -6,7 +6,7 @@
 **One-Line Description:** A 3NF-normalized relational database management system and full-stack clinical platform built with PostgreSQL 16, Prisma ORM, and Next.js 14 to eliminate appointment collisions, prevent inpatient bed bottlenecks, coordinate diagnostic lab orders, and ensure financial ledger integrity.  
 **Course:** Database Management Systems (DBMS)  
 **Faculty / Instructor:** Dr. Kiran Mayee Adavala  
-**Academic Year:** 2025–2026  
+**Academic Year:** 2025–2029  
 **Database Engine:** PostgreSQL 16 (Neon Cloud Serverless)  
 **GitHub Repository:** [https://github.com/Imad-81/dbms_assignment_1](https://github.com/Imad-81/dbms_assignment_1)  
 
@@ -28,34 +28,30 @@ DBMS-Course-Project/
 │   ├── 03_Review_2_Presentation.pdf       ← Review 2 DDL, queries, views & tests (14 slides)
 │   └── README.md                          ← Review 2 schema hardening & query review
 │
-├── 📂 Presentation-III/                   ← 📌 Review 3 Deliverables (Upcoming / Final)
+├── 📂 Presentation-III/                   ← 📌 Review 3 Deliverables (Web Application & Final Viva)
+│   ├── web/                               ← 🌐 Full-Stack Web Application (Next.js 14 + Prisma)
+│   │   ├── src/app/                       ← App Router pages (Dashboard, Patients, Appointments, etc.)
+│   │   ├── src/components/                ← Reusable UI modal dialogs and data tables
+│   │   ├── prisma/schema.prisma           ← Type-safe Prisma schema matching PostgreSQL
+│   │   ├── package.json                   ← Frontend dependencies & scripts
+│   │   └── README.md                      ← Local setup and module documentation
 │   └── README.md                          ← Final milestone roadmap, UI integration & viva prep
 │
 ├── 📂 Project-Report/                     ← 📄 Official Project Report (5 Marks)
+│   ├── HAPCMS_Project_Report.docx         ← Editable Word document matching hansith.pdf format
 │   ├── HAPCMS_Project_Report.pdf          ← Complete 22-page formal PDF report (all 16 sections)
 │   ├── PROJECT_REPORT.md                  ← Markdown report source with full SQL listings
-│   ├── assets/                            ← High-resolution ER diagrams (Crow's Foot notation)
+│   ├── assets/                            ← High-resolution ER diagrams & Woxsen University logo
 │   ├── screenshots/                       ← High-resolution UI captures of all 6 web modules
 │   └── README.md                          ← Report contents checklist & section directory
 │
-├── 📂 web/                                ← 🌐 Full-Stack Web Application (Next.js 14 + Prisma)
-│   ├── src/app/                           ← App Router pages (Dashboard, Patients, Appointments, etc.)
-│   ├── src/components/                    ← Reusable UI modal dialogs and data tables
-│   ├── prisma/schema.prisma               ← Type-safe Prisma schema matching PostgreSQL
-│   ├── package.json                       ← Frontend dependencies & scripts
-│   └── README.md                          ← Local setup and module documentation
-│
 ├── 📂 archive/                            ← 📦 Archived Working Files (Not part of submission)
+│   ├── scripts/                           ← 🛠️ Database CLI & PDF Generation Automation
 │   ├── docs/                              ← Conceptual notes, guides, and drafts
 │   ├── html/                              ← Presentation HTML source decks & ERD viewer
 │   ├── submissions/                       ← Previous milestone deliverables
 │   └── sql/                               ← Raw PostgreSQL DDL and seed scripts
 │
-├── 📂 scripts/                            ← 🛠️ Database CLI & PDF Generation Automation
-│   ├── seed_realistic.ts                  ← TypeScript database seeder
-│   └── generate_pdf_report.js             ← Puppeteer academic PDF report builder
-│
-├── package.json                           ← Root delegation scripts for npm commands
 └── README.md                              ← Main project documentation (this file)
 ```
 
@@ -76,7 +72,7 @@ The database schema is partitioned into **6 cohesive functional clusters** norma
 
 ---
 
-## 🖥️ Full-Stack Clinical Application Modules (`web/`)
+## 🖥️ Full-Stack Clinical Application Modules (`Presentation-III/web/`)
 
 Built on **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Prisma ORM**:
 
@@ -99,32 +95,19 @@ Built on **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Pr
 ```bash
 # Clone the repository
 git clone https://github.com/Imad-81/dbms_assignment_1.git
-cd dbms_assignment_1
+cd dbms_assignment_1/Presentation-III/web
 
 # Install Node dependencies
 npm install
 ```
 
-### 3. Configure Database URL
-Create a `.env` file in the project root:
-```env
-DATABASE_URL="postgresql://username:password@ep-sample.neon.tech/hapcms?sslmode=require"
-```
-
-### 4. Run Relational Database Tests & Audits
+### 3. Launch the Web Application
 ```bash
-# Run deep relational graph traversal & constraint audits via Prisma
-npm test
-```
-
-### 5. Launch the Web Application
-```bash
-# Start Next.js development server (runs web/ on port 3000)
 npm run dev
 ```
 Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
-### 6. Visual Database Explorer (Prisma Studio)
+### 4. Visual Database Explorer (Prisma Studio)
 ```bash
 # Launch Prisma Studio GUI (opens on port 5555)
 npm run studio

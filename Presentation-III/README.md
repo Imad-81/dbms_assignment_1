@@ -37,5 +37,5 @@ This directory is designated for the **Review 3 (Final Course Evaluation)** subm
 | Deliverable | Status | Description |
 |---|---|---|
 | `Review_3_Final_Presentation.pdf` | In Preparation | Final slides covering full-stack system architecture, UI, and live demonstration. |
-| Web Application Prototype | Available in [`web/`](../web/) | Complete Next.js full-stack system connected to PostgreSQL 16. |
+| Web Application Prototype | Available in [`web/`](./web/) | Complete Next.js full-stack system connected to PostgreSQL 16. |
 | Comprehensive Project Report | Available in [`Project-Report/`](../Project-Report/) | 16-section complete formal project report. |

@@ -20,7 +20,7 @@ from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
 from docx.oxml import parse_xml, OxmlElement
 from docx.oxml.ns import nsdecls, qn
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 REPORT_DIR = os.path.join(BASE_DIR, 'Project-Report')
 ASSETS_DIR = os.path.join(REPORT_DIR, 'assets')
 SCREENSHOTS_DIR = os.path.join(REPORT_DIR, 'screenshots')
@@ -1013,6 +1013,11 @@ export async function createAppointment(data: AppointmentInput) {
 │   ├── 03_Review_2_Presentation.pdf    # Review 2 Presentation Deck
 │   └── README.md                       # Milestone 2 Details
 ├── Presentation-III/
+│   ├── web/                            # Next.js 14 Full-Stack Application
+│   │   ├── src/                        # App Router, components, Prisma lib
+│   │   ├── prisma/                     # Prisma schema & SQL migrations
+│   │   ├── package.json                # Web dependencies
+│   │   └── README.md                   # Web setup instructions
 │   └── README.md                       # Review 3 Roadmap & Preparation
 ├── Project-Report/
 │   ├── HAPCMS_Project_Report.docx      # Editable Formal Word Report (This Document)
@@ -1020,11 +1025,8 @@ export async function createAppointment(data: AppointmentInput) {
 │   ├── PROJECT_REPORT.md               # Markdown Source Report
 │   ├── assets/                         # ERD diagrams & University logo
 │   └── screenshots/                    # High-res application UI captures
-├── web/                                # Next.js 14 Full-Stack Application
-│   ├── src/                            # App Router, components, Prisma lib
-│   ├── prisma/                         # Prisma schema & SQL migrations
-│   ├── package.json                    # Web dependencies
-│   └── README.md                       # Web setup instructions
+├── archive/                            # Archived Working Files
+│   └── scripts/                        # Database automation & generation scripts
 └── README.md                           # Main Project Overview"""
     add_code_block(doc, tree_text)
 
@@ -1114,10 +1116,9 @@ export async function createAppointment(data: AppointmentInput) {
     add_heading_2(doc, "Quick Start Instructions")
     quick_start = """# 1. Clone repository
 git clone https://github.com/Imad-81/dbms_assignment_1.git
-cd dbms_assignment_1
+cd dbms_assignment_1/Presentation-III/web
 
 # 2. Install dependencies & initialize database
-cd web
 npm install
 npx prisma generate
 npx prisma db push

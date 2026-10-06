@@ -828,18 +828,20 @@ DBMS-Course-Project/
 │   ├── 03_Review_2_Presentation.pdf    # Review 2 Presentation Deck
 │   └── README.md                       # Milestone 2 details
 ├── Presentation-III/
+│   ├── web/                            # Next.js 14 Web Application
+│   │   ├── src/                        # App Router, components, lib
+│   │   ├── prisma/                     # Prisma schema & migrations
+│   │   ├── package.json                # Web dependencies
+│   │   └── README.md                   # Web setup instructions
 │   └── README.md                       # Review 3 Roadmap & Preparation
 ├── Project-Report/
+│   ├── HAPCMS_Project_Report.docx      # Editable Formal Word Report
 │   ├── HAPCMS_Project_Report.pdf       # Formal 16-section PDF Report
 │   ├── PROJECT_REPORT.md               # Markdown Source Report
-│   ├── assets/                         # ERD diagrams & visual figures
+│   ├── assets/                         # ERD diagrams & University logo
 │   └── screenshots/                    # High-res application UI captures
-├── web/                                # Next.js 14 Web Application
-│   ├── src/                            # App Router, components, lib
-│   ├── prisma/                         # Prisma schema & migrations
-│   ├── package.json                    # Web dependencies
-│   └── README.md                       # Web setup instructions
-├── archive/                            # Archived working files (docs, html, submissions, sql)
+├── archive/                            # Archived working files (scripts, docs, html, submissions, sql)
+│   └── scripts/                        # Database automation & report scripts
 └── README.md                           # Main Project Readme
 ```
 
@@ -847,10 +849,10 @@ DBMS-Course-Project/
 ```bash
 # 1. Clone repository
 git clone https://github.com/Imad-81/dbms_assignment_1.git
-cd dbms_assignment_1
+cd dbms_assignment_1/Presentation-III/web
 
-# 2. Run Database Integrity Tests & Audits
-npm test
+# 2. Install dependencies & initialize
+npm install
 
 # 3. Launch Web Application
 npm run dev

@@ -8,7 +8,7 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '../..');
 const REPORT_DIR = path.join(ROOT, 'Project-Report');
 const PDF_PATH = path.join(REPORT_DIR, 'HAPCMS_Project_Report.pdf');
 
