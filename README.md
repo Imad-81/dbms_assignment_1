@@ -45,10 +45,11 @@ DBMS-Course-Project/
 │   ├── package.json                       ← Frontend dependencies & scripts
 │   └── README.md                          ← Local setup and module documentation
 │
-├── 📂 sql/                                ← 🗄️ Core PostgreSQL DDL & DML Scripts
-│   ├── 01_create_tables.sql               ← Schema DDL, custom ENUMs, domain CHECKs, indexes
-│   ├── 02_sample_data.sql                 ← Realistic clinical seed data across all 16 tables
-│   └── 03_test_queries.sql                ← Analytical and multi-table verification queries
+├── 📂 archive/                            ← 📦 Archived Working Files (Not part of submission)
+│   ├── docs/                              ← Conceptual notes, guides, and drafts
+│   ├── html/                              ← Presentation HTML source decks & ERD viewer
+│   ├── submissions/                       ← Previous milestone deliverables
+│   └── sql/                               ← Raw PostgreSQL DDL and seed scripts
 │
 ├── 📂 scripts/                            ← 🛠️ Database CLI & PDF Generation Automation
 │   ├── seed_realistic.ts                  ← TypeScript database seeder

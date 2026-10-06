@@ -854,7 +854,7 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;</cod
 │   ├── prisma/                         # Prisma ORM schema
 │   ├── package.json
 │   └── README.md
-├── sql/                                # PostgreSQL Scripts (DDL, DML, Queries)
+├── archive/                            # Archived working files (docs, html, submissions, sql)
 ├── run_db.py                           # Python CLI test & report runner
 └── README.md                           # Main Project README</code></pre>
 

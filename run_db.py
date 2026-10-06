@@ -58,8 +58,9 @@ def setup_database():
     """Runs 01_create_tables.sql and 02_sample_data.sql"""
     print("\n🚀 INITIALIZING POSTGRESQL DATABASE (SCHEMA & SEED DATA)...")
     
-    t_file = BASE_DIR / "sql" / "01_create_tables.sql"
-    d_file = BASE_DIR / "sql" / "02_sample_data.sql"
+    sql_dir = BASE_DIR / "sql" if (BASE_DIR / "sql").exists() else BASE_DIR / "archive" / "sql"
+    t_file = sql_dir / "01_create_tables.sql"
+    d_file = sql_dir / "02_sample_data.sql"
     
     if run_sql_file(t_file, "1. Create Tables & Constraints"):
         if run_sql_file(d_file, "2. Populate Realistic Sample Data"):

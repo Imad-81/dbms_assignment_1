@@ -839,10 +839,7 @@ DBMS-Course-Project/
 │   ├── prisma/                         # Prisma schema & migrations
 │   ├── package.json                    # Web dependencies
 │   └── README.md                       # Web setup instructions
-├── sql/                                # PostgreSQL Scripts
-│   ├── 01_create_tables.sql            # DDL, ENUMs, Constraints
-│   ├── 02_sample_data.sql              # Realistic seed records
-│   └── 03_test_queries.sql             # Test & Analytical queries
+├── archive/                            # Archived working files (docs, html, submissions, sql)
 ├── run_db.py                           # Python CLI test & report runner
 └── README.md                           # Main Project Readme
 ```
